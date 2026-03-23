@@ -71,7 +71,7 @@
     inset: 0;
     background: linear-gradient(
       90deg,
-      rgba(34, 46, 31, 0.65) 0%,
+      rgba(34, 46, 31, 0.65) 15%,
       rgba(34, 46, 31, 0.35) 40%,
       rgba(34, 46, 31, 0.12) 65%,
       rgba(34, 46, 31, 0.02) 95%,
@@ -164,7 +164,7 @@
   }
 
   .auth-brand-panel__subtitle {
-    max-width: 16ch;
+    max-width: 17ch;
     color: rgba(255, 255, 255, 0.92);
     font-size: clamp(1.25rem, 2.2vw, 1.75rem);
     font-weight: 600;
@@ -172,7 +172,7 @@
   }
 
   .auth-brand-panel__description {
-    max-width: 34ch;
+    max-width: 42ch;
     color: rgba(255, 255, 255, 0.72);
     font-size: var(--text-base);
     line-height: 24px;
@@ -239,6 +239,10 @@
       padding: var(--space-16) var(--space-12);
     }
 
+    .auth-brand-panel__content {
+      transform: translateY(-30%);
+    }
+
     .auth-brand-panel__list {
       display: grid;
     }
@@ -248,7 +252,7 @@
       top: auto;
       right: 0;
       bottom: 0;
-      width: min(42vw, 500px);
+      width: min(38vw, 500px);
     }
   }
 
