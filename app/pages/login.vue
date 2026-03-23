@@ -5,6 +5,7 @@
         eyebrow="Administration Portal"
         title="系統資料屬馥華全球電商機密文件"
         description="未經授權，禁止複製、轉錄或攝影等其他洩密行為。"
+        :items="brandItems"
       />
     </template>
 
@@ -58,6 +59,21 @@
       },
     ],
   });
+
+  const brandItems = [
+    {
+      title: "資料傳輸受控可追蹤",
+      text: "登入前即建立穩定的安全感知，讓權限進入與後續操作維持一致節奏。",
+    },
+    {
+      title: "跨節點同步狀態明確",
+      text: "以低調資料視覺呈現系統正在運作，而不是用高噪音特效分散注意力。",
+    },
+    {
+      title: "適用企業後台入口",
+      text: "在品牌深綠基調上加入科技感結構，保留可信度並提升專業辨識度。",
+    },
+  ];
 
   const loginFormRef = ref(null);
   const form = ref({
