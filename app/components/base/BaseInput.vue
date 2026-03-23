@@ -159,7 +159,7 @@ defineExpose({
 .base-input__field:focus-visible {
   outline: 0;
   border-color: var(--color-primary-600);
-  box-shadow: 0 0 0 4px rgba(142, 173, 146, 0.24);
+  box-shadow: 0 0 0 4px rgba(var(--color-focus-ring-rgb), 0.24);
 }
 
 .base-input__suffix {
@@ -188,7 +188,7 @@ defineExpose({
 }
 
 .is-error .base-input__field:focus-visible {
-  box-shadow: 0 0 0 4px rgba(181, 69, 69, 0.14);
+  box-shadow: 0 0 0 4px rgba(var(--color-danger-rgb), 0.14);
 }
 
 .is-disabled .base-input__field {

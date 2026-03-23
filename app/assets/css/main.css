@@ -1,24 +1,28 @@
 :root {
-  --color-bg: #f4f6f1;
-  --color-bg-elevated: #fbfcfa;
+  --color-bg: #f8f8f4;
+  --color-bg-elevated: #fffefb;
   --color-surface: #ffffff;
-  --color-surface-muted: #ecf1e8;
-  --color-border: #d7ded3;
-  --color-border-strong: #b6c2b4;
-  --color-text: #18231a;
-  --color-text-muted: #5e6b61;
-  --color-text-soft: #7b877d;
-  --color-primary-700: #35573a;
-  --color-primary-600: #47704c;
-  --color-primary-500: #5d8a63;
-  --color-primary-100: #dce8dc;
-  --color-accent: #b68a52;
+  --color-surface-muted: #f1f4ec;
+  --color-border: #dddeda;
+  --color-border-strong: #c4c9ba;
+  --color-text: #595757;
+  --color-text-muted: #76716f;
+  --color-text-soft: #9b9894;
+  --color-primary-700: #56942f;
+  --color-primary-600: #69ba3a;
+  --color-primary-500: #82d84e;
+  --color-primary-100: #eef8e6;
+  --color-accent: #ee7d3b;
   --color-danger: #b54545;
   --color-warning: #a56a2a;
-  --color-success: #2f7a4a;
-  --color-focus-ring: #8ead92;
-  --shadow-card: 0 20px 60px rgba(24, 35, 26, 0.08);
-  --shadow-button-hover: 0 10px 24px rgba(53, 87, 58, 0.22);
+  --color-success: #5aa445;
+  --color-focus-ring: #a6e37b;
+  --color-primary-600-rgb: 105, 186, 58;
+  --color-focus-ring-rgb: 166, 227, 123;
+  --color-danger-rgb: 181, 69, 69;
+  --shadow-card: 0 22px 60px rgba(89, 87, 87, 0.1);
+  --shadow-card-hover: 0 28px 76px rgba(89, 87, 87, 0.14);
+  --shadow-button-hover: 0 12px 28px rgba(105, 186, 58, 0.28);
   --text-xs: 12px;
   --text-sm: 14px;
   --text-base: 16px;
@@ -53,7 +57,8 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at top left, rgba(220, 232, 220, 0.9), transparent 30%),
+    radial-gradient(circle at top left, rgba(130, 216, 78, 0.16), transparent 28%),
+    radial-gradient(circle at top right, rgba(238, 125, 59, 0.12), transparent 24%),
     linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg) 100%);
   color: var(--color-text);
   font-family: "Noto Sans TC", sans-serif;
@@ -69,11 +74,11 @@ body::before {
   inset: 0;
   z-index: -1;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.28) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px);
+    linear-gradient(rgba(130, 216, 78, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 125, 59, 0.05) 1px, transparent 1px);
   background-size: 28px 28px;
   content: "";
-  opacity: 0.22;
+  opacity: 0.2;
   pointer-events: none;
 }
 
@@ -118,7 +123,7 @@ p {
 }
 
 ::selection {
-  background: rgba(93, 138, 99, 0.18);
+  background: rgba(130, 216, 78, 0.24);
 }
 
 .sr-only {

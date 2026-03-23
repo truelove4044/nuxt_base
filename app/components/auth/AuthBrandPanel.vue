@@ -58,7 +58,7 @@
     left: -72px;
     width: 240px;
     height: 240px;
-    background: rgba(182, 138, 82, 0.18);
+    background: rgba(238, 125, 59, 0.2);
   }
 
   .auth-brand-panel::after {
@@ -66,7 +66,7 @@
     bottom: -100px;
     width: 280px;
     height: 280px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(130, 216, 78, 0.14);
   }
 
   .auth-brand-panel__content {
@@ -84,7 +84,7 @@
   }
 
   .auth-brand-panel__eyebrow {
-    color: rgba(236, 241, 232, 0.82);
+    color: rgba(255, 255, 255, 0.78);
     font-size: var(--text-sm);
     line-height: 20px;
     letter-spacing: 0.08em;
@@ -100,7 +100,7 @@
 
   .auth-brand-panel__description {
     max-width: 34ch;
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(255, 255, 255, 0.72);
     font-size: var(--text-base);
     line-height: 24px;
   }

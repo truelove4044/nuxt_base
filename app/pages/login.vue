@@ -8,37 +8,43 @@
       />
     </template>
 
-    <BaseCard class="login-page__card">
-      <div class="login-page__header">
-        <p class="login-page__overline">Welcome back</p>
-        <h2 class="login-page__title">登入管理後台</h2>
-        <p class="login-page__description">
-          請使用您的內部帳號與密碼登入。若超過 8
-          秒未完成驗證，系統會提示您重新嘗試。
-        </p>
-      </div>
+    <div class="login-page__column">
+      <BaseCard class="login-page__card">
+        <div class="login-page__header">
+          <p class="login-page__overline">Welcome back</p>
+          <h2 class="login-page__title">登入管理後台</h2>
+          <p class="login-page__description">
+            請使用您的內部帳號與密碼登入。若超過 8
+            秒未完成驗證，系統會提示您重新嘗試。
+          </p>
+        </div>
 
-      <AuthLoginForm
-        ref="loginFormRef"
-        v-model="form"
-        :pending="pending"
-        :field-errors="fieldErrors"
-        :form-error="formError"
-        @submit="handleSubmit"
-      />
+        <AuthLoginForm
+          ref="loginFormRef"
+          v-model="form"
+          :pending="pending"
+          :field-errors="fieldErrors"
+          :form-error="formError"
+          @submit="handleSubmit"
+        />
 
-      <div class="login-page__meta">
-        <p class="login-page__support">
-          需要重設密碼或開通權限，請聯絡系統管理員。
-        </p>
-        <p class="login-page__demo">
-          示範環境帳密：
-          <strong>admin@example.com</strong>
-          /
-          <strong>Admin123!</strong>
-        </p>
-      </div>
-    </BaseCard>
+        <div class="login-page__meta">
+          <p class="login-page__support">
+            需要重設密碼或開通權限，請聯絡系統管理員。
+          </p>
+          <p class="login-page__demo">
+            示範環境帳密：
+            <strong>admin@example.com</strong>
+            /
+            <strong>Admin123!</strong>
+          </p>
+        </div>
+      </BaseCard>
+
+      <p class="login-page__copyright">
+        Copyright © Forwardmall. All rights reserved.
+      </p>
+    </div>
   </AuthShell>
 </template>
 
@@ -175,9 +181,18 @@
 </script>
 
 <style scoped>
-  .login-page__card {
+  .login-page__column {
+    position: relative;
+    display: flex;
+    align-items: center;
     width: min(100%, 440px);
+    min-height: 100%;
+  }
+
+  .login-page__card {
+    width: 100%;
     padding: var(--space-6);
+    align-self: center;
   }
 
   .login-page__header {
@@ -221,9 +236,26 @@
     font-weight: 600;
   }
 
+  .login-page__copyright {
+    margin-top: var(--space-5);
+    color: var(--color-text-soft);
+    font-size: var(--text-xs);
+    line-height: 18px;
+    text-align: center;
+  }
+
   @media (min-width: 768px) {
     .login-page__card {
       padding: var(--space-10);
+    }
+
+    .login-page__copyright {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 100%;
+      padding-top: 0;
+      transform: translateX(-50%);
     }
   }
 </style>

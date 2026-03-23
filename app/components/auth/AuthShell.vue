@@ -19,13 +19,14 @@
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(circle at top, rgba(182, 138, 82, 0.24), transparent 30%),
-    linear-gradient(160deg, #28442d 0%, #35573a 45%, #47704c 100%);
+    radial-gradient(circle at top left, rgba(130, 216, 78, 0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(238, 125, 59, 0.12), transparent 28%),
+    linear-gradient(160deg, #33432d 0%, #42543a 48%, #55684d 100%);
 }
 
 .auth-shell__content {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   padding: var(--space-10) var(--space-5);
 }

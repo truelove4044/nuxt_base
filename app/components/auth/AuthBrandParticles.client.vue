@@ -57,9 +57,9 @@
         },
         color: {
           value: [
-            "rgba(236, 241, 232, 0.78)",
-            "rgba(220, 232, 220, 0.54)",
-            "rgba(182, 138, 82, 0.34)",
+            "rgba(255, 255, 255, 0.68)",
+            "rgba(130, 216, 78, 0.42)",
+            "rgba(238, 125, 59, 0.34)",
           ],
         },
         shape: {
@@ -88,15 +88,15 @@
         links: {
           enable: true,
           distance: 136,
-          color: "rgba(220, 232, 220, 0.34)",
+          color: "rgba(130, 216, 78, 0.28)",
           frequency: 1,
-          opacity: 0.28,
+          opacity: 0.26,
           width: 1,
           triangles: {
             enable: true,
             frequency: 1,
-            color: "rgba(182, 138, 82, 0.44)",
-            opacity: 0.16,
+            color: "rgba(238, 125, 59, 0.38)",
+            opacity: 0.12,
           },
         },
         move: {

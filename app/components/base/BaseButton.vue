@@ -80,12 +80,12 @@ defineProps({
 .base-button:focus-visible {
   outline: 0;
   box-shadow:
-    0 0 0 4px rgba(142, 173, 146, 0.32),
+    0 0 0 4px rgba(var(--color-focus-ring-rgb), 0.32),
     var(--shadow-button-hover);
 }
 
 .base-button:disabled {
-  background: #8fa493;
+  background: color-mix(in srgb, var(--color-primary-600) 58%, #ffffff);
   color: rgba(255, 255, 255, 0.9);
   box-shadow: none;
   cursor: not-allowed;
