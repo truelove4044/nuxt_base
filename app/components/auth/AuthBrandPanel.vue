@@ -1,5 +1,15 @@
 <template>
   <section class="auth-brand-panel">
+    <div class="auth-brand-panel__art-shell" aria-hidden="true">
+      <div class="auth-brand-panel__art-glow" />
+      <img
+        class="auth-brand-panel__art-image"
+        src="/login.png"
+        alt=""
+        width="800"
+        height="800"
+      />
+    </div>
     <AuthBrandParticles />
     <div class="auth-brand-panel__content">
       <img
@@ -11,6 +21,7 @@
       />
       <p class="auth-brand-panel__eyebrow">{{ eyebrow }}</p>
       <h1 class="auth-brand-panel__title">{{ title }}</h1>
+      <h2 class="auth-brand-panel__subtitle">{{ subtitle }}</h2>
       <p class="auth-brand-panel__description">{{ description }}</p>
     </div>
   </section>
@@ -23,6 +34,10 @@
       default: "",
     },
     title: {
+      type: String,
+      required: true,
+    },
+    subtitle: {
       type: String,
       required: true,
     },
@@ -44,9 +59,59 @@
     color: rgba(255, 255, 255, 0.92);
   }
 
+  .auth-brand-panel__art-shell {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .auth-brand-panel__art-shell::before {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(34, 46, 31, 0.65) 0%,
+      rgba(34, 46, 31, 0.35) 40%,
+      rgba(34, 46, 31, 0.12) 65%,
+      rgba(34, 46, 31, 0.02) 95%,
+      transparent 100%
+    );
+    content: "";
+  }
+
+  .auth-brand-panel__art-glow {
+    position: absolute;
+    right: 4%;
+    bottom: 2%;
+    width: min(38vw, 360px);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    background: radial-gradient(
+      circle,
+      rgba(130, 216, 78, 0.2) 0%,
+      rgba(130, 216, 78, 0.04) 58%,
+      transparent 76%
+    );
+    filter: blur(10px);
+    opacity: 0.9;
+  }
+
+  .auth-brand-panel__art-image {
+    position: absolute;
+    right: -10%;
+    bottom: -2%;
+    width: min(46vw, 560px);
+    height: auto;
+    opacity: 0.85;
+    object-fit: contain;
+    filter: drop-shadow(0 22px 48px rgba(18, 25, 17, 0.34));
+  }
+
   .auth-brand-panel::before,
   .auth-brand-panel::after {
     position: absolute;
+    z-index: 2;
     border-radius: 999px;
     content: "";
     filter: blur(12px);
@@ -71,7 +136,7 @@
 
   .auth-brand-panel__content {
     position: relative;
-    z-index: 1;
+    z-index: 3;
     display: grid;
     gap: var(--space-4);
     width: min(100%, 560px);
@@ -94,8 +159,16 @@
   .auth-brand-panel__title {
     max-width: 12ch;
     color: #fff;
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(2.4rem, 4.4vw, 3.75rem);
     line-height: 1.08;
+  }
+
+  .auth-brand-panel__subtitle {
+    max-width: 16ch;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.18;
   }
 
   .auth-brand-panel__description {
@@ -152,6 +225,13 @@
     .auth-brand-panel {
       padding: var(--space-12) var(--space-8);
     }
+
+    .auth-brand-panel__art-image {
+      top: 50%;
+      right: -5%;
+      transform: translateY(-50%);
+      width: min(44vw, 360px);
+    }
   }
 
   @media (min-width: 1024px) {
@@ -161,6 +241,44 @@
 
     .auth-brand-panel__list {
       display: grid;
+    }
+
+    .auth-brand-panel__art-image {
+      transform: none;
+      top: auto;
+      right: 0;
+      bottom: 0;
+      width: min(42vw, 500px);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .auth-brand-panel__art-shell::before {
+      background: linear-gradient(
+        180deg,
+        rgba(34, 46, 31, 0.34) 0%,
+        rgba(34, 46, 31, 0.14) 100%
+      );
+    }
+
+    .auth-brand-panel__art-glow {
+      right: -12%;
+      bottom: -10%;
+      width: 220px;
+      opacity: 0.72;
+    }
+
+    .auth-brand-panel__art-image {
+      top: 50%;
+      transform: translateY(-50%);
+      right: -5%;
+      width: 260px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .auth-brand-panel__art-image {
+      display: none;
     }
   }
 </style>

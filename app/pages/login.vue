@@ -3,7 +3,8 @@
     <template #brand>
       <AuthBrandPanel
         eyebrow="Administration Portal"
-        title="系統資料屬馥華全球電商機密文件"
+        title="馥華營運管理系統"
+        subtitle="系統資料屬馥華全球電商機密文件"
         description="未經授權，禁止複製、轉錄或攝影等其他洩密行為。"
       />
     </template>
@@ -248,14 +249,22 @@
     .login-page__card {
       padding: var(--space-10);
     }
+  }
 
+  @media (min-width: 1024px) {
     .login-page__copyright {
       position: absolute;
-      bottom: 0;
+      bottom: -20px;
       left: 50%;
       width: 100%;
       padding-top: 0;
       transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .login-page__column {
+      flex-direction: column;
     }
   }
 </style>
