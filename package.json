@@ -1,5 +1,5 @@
 {
-  "name": "nuxt_base",
+  "name": "nuxt_demo",
   "type": "module",
   "private": true,
   "scripts": {
@@ -14,9 +14,13 @@
     "@nuxt/fonts": "^0.14.0",
     "@nuxt/icon": "^2.2.1",
     "@nuxt/image": "^2.0.0",
+    "@pinia/nuxt": "^0.11.3",
     "@tsparticles/slim": "^3.9.1",
     "nuxt": "^4.4.2",
+    "pinia": "^3.0.4",
+    "vee-validate": "^4.15.1",
     "vue": "^3.5.30",
-    "vue-router": "^5.0.3"
+    "vue-router": "^5.0.3",
+    "yup": "^1.7.1"
   }
 }

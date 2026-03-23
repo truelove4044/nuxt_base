@@ -22,10 +22,14 @@
 
         <AuthLoginForm
           ref="loginFormRef"
-          v-model="form"
+          v-model:account="account"
+          v-model:password="password"
+          :account-error="accountError"
+          :password-error="passwordError"
           :pending="pending"
-          :field-errors="fieldErrors"
           :form-error="formError"
+          @blur:account="handleAccountBlur"
+          @blur:password="handlePasswordBlur"
           @submit="handleSubmit"
         />
 
@@ -50,7 +54,9 @@
 </template>
 
 <script setup>
-  import { nextTick, ref } from "vue";
+  import { nextTick, ref, watch } from "vue";
+  import { useField, useForm } from "vee-validate";
+  import * as yup from "yup";
 
   definePageMeta({
     layout: "default",
@@ -66,28 +72,46 @@
     ],
   });
 
-  const loginFormRef = ref(null);
-  const form = ref({
-    account: "",
-    password: "",
+  const validationSchema = yup.object({
+    account: yup
+      .string()
+      .trim()
+      .required("請輸入帳號。")
+      .email("請輸入有效的電子郵件地址。"),
+    password: yup
+      .string()
+      .required("請輸入密碼。")
+      .min(6, "密碼至少需要 6 碼。"),
   });
+
+  const loginFormRef = ref(null);
+  const authStore = useAuthStore();
   const pending = ref(false);
-  const fieldErrors = ref({});
   const formError = ref("");
 
-  function validateFields() {
-    const errors = {};
+  const { handleSubmit: withValidation, setErrors } = useForm({
+    validationSchema,
+    initialValues: {
+      account: "",
+      password: "",
+    },
+  });
 
-    if (!form.value.account.trim()) {
-      errors.account = "請輸入帳號。";
-    }
+  const {
+    value: account,
+    errorMessage: accountError,
+    handleBlur: handleAccountBlur,
+  } = useField("account", undefined, {
+    validateOnValueUpdate: true,
+  });
 
-    if (!form.value.password) {
-      errors.password = "請輸入密碼。";
-    }
-
-    return errors;
-  }
+  const {
+    value: password,
+    errorMessage: passwordError,
+    handleBlur: handlePasswordBlur,
+  } = useField("password", undefined, {
+    validateOnValueUpdate: true,
+  });
 
   function getErrorPayload(error) {
     return error?.data || error?.response?._data || {};
@@ -104,48 +128,40 @@
   async function focusFirstInvalid(preferredField) {
     await nextTick();
 
-    if (preferredField) {
-      loginFormRef.value?.focusField(preferredField);
-      return;
-    }
-
-    if (fieldErrors.value.account) {
+    if (preferredField === "account") {
       loginFormRef.value?.focusField("account");
       return;
     }
 
-    if (fieldErrors.value.password) {
+    if (preferredField === "password") {
       loginFormRef.value?.focusField("password");
+      return;
     }
+
+    loginFormRef.value?.focusField("account");
   }
 
-  async function handleSubmit() {
+  const submitLogin = withValidation(async (values) => {
     if (pending.value) {
       return;
     }
 
-    fieldErrors.value = validateFields();
     formError.value = "";
-
-    if (Object.keys(fieldErrors.value).length > 0) {
-      formError.value = "請先完成必填欄位。";
-      await focusFirstInvalid();
-      return;
-    }
-
     pending.value = true;
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort("timeout"), 8000);
 
     try {
-      const result = await $fetch("/api/auth/login", {
+      const result = await useClientFetch("/api/login", {
         method: "POST",
-        body: form.value,
+        body: values,
         signal: controller.signal,
+        skipAuthRedirectOn401: true,
       });
 
-      await navigateTo(result.redirectTo || "/");
+      authStore.setAuth(result);
+      await navigateTo("/");
     } catch (error) {
       const payload = getErrorPayload(error);
       const statusCode =
@@ -157,12 +173,15 @@
       }
 
       if (payload.fieldErrors) {
-        fieldErrors.value = payload.fieldErrors;
+        setErrors(payload.fieldErrors);
+        formError.value = payload.formError || "請修正欄位內容後再試。";
+        await focusFirstInvalid(Object.keys(payload.fieldErrors)[0]);
+        return;
       }
 
       if (statusCode === 401) {
         formError.value =
-          payload.formError || "帳號或密碼錯誤，請重新確認後再試。";
+          payload.formError || payload.message || "帳號或密碼錯誤。";
         await focusFirstInvalid("account");
         return;
       }
@@ -178,7 +197,24 @@
       clearTimeout(timeoutId);
       pending.value = false;
     }
+  }, async ({ errors }) => {
+    formError.value = "請修正欄位內容後再試。";
+    await focusFirstInvalid(Object.keys(errors)[0]);
+  });
+
+  async function handleSubmit() {
+    if (pending.value) {
+      return;
+    }
+
+    await submitLogin();
   }
+
+  watch([account, password], () => {
+    if (formError.value) {
+      formError.value = "";
+    }
+  });
 </script>
 
 <style scoped>

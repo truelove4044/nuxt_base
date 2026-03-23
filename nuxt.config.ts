@@ -4,7 +4,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
 
-  modules: ["@nuxt/image", "@nuxt/icon", "@nuxt/fonts", "@nuxt/eslint"],
+  modules: [
+    "@nuxt/image",
+    "@nuxt/icon",
+    "@nuxt/fonts",
+    "@nuxt/eslint",
+    "@pinia/nuxt",
+  ],
   fonts: {
     families: [
       {

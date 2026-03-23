@@ -11,26 +11,33 @@
 
     <BaseInput
       ref="accountInput"
-      v-model="account"
+      :model-value="account"
       label="帳號"
       autocomplete="username"
       inputmode="email"
-      :error="fieldErrors.account"
+      :error="accountError"
+      :disabled="pending"
       hint="可輸入電子郵件或內部帳號。"
+      @update:model-value="emit('update:account', $event)"
+      @blur="emit('blur:account', $event)"
     />
 
     <BaseInput
       ref="passwordInput"
-      v-model="password"
+      :model-value="password"
       label="密碼"
       :type="showPassword ? 'text' : 'password'"
       autocomplete="current-password"
-      :error="fieldErrors.password"
+      :error="passwordError"
+      :disabled="pending"
+      @update:model-value="emit('update:password', $event)"
+      @blur="emit('blur:password', $event)"
     >
       <template #suffix>
         <button
           class="login-form__toggle"
           type="button"
+          :disabled="pending"
           :aria-label="showPassword ? '隱藏密碼' : '顯示密碼'"
           @click="showPassword = !showPassword"
         >
@@ -56,45 +63,45 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
-const props = defineProps({
-  modelValue: {
-    type: Object,
-    required: true,
-  },
+defineProps({
   pending: {
     type: Boolean,
     default: false,
-  },
-  fieldErrors: {
-    type: Object,
-    default: () => ({}),
   },
   formError: {
     type: String,
     default: "",
   },
+  account: {
+    type: String,
+    default: "",
+  },
+  password: {
+    type: String,
+    default: "",
+  },
+  accountError: {
+    type: String,
+    default: "",
+  },
+  passwordError: {
+    type: String,
+    default: "",
+  },
 });
 
-const emit = defineEmits(["update:modelValue", "submit"]);
+const emit = defineEmits([
+  "update:account",
+  "update:password",
+  "blur:account",
+  "blur:password",
+  "submit",
+]);
 const showPassword = ref(false);
 const accountInput = ref(null);
 const passwordInput = ref(null);
-
-const account = computed({
-  get: () => props.modelValue.account ?? "",
-  set: (value) => {
-    emit("update:modelValue", { ...props.modelValue, account: value });
-  },
-});
-
-const password = computed({
-  get: () => props.modelValue.password ?? "",
-  set: (value) => {
-    emit("update:modelValue", { ...props.modelValue, password: value });
-  },
-});
 
 function focusField(field) {
   if (field === "password") {
@@ -162,6 +169,11 @@ defineExpose({
 
 .login-form__toggle:hover {
   color: var(--color-primary-700);
+}
+
+.login-form__toggle:disabled {
+  color: var(--color-text-soft);
+  cursor: not-allowed;
 }
 
 .login-form__footer {

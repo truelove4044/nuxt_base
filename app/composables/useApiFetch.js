@@ -1,18 +1,28 @@
-function onResponse(context) {
-  const { response } = context;
+function createOnResponse(handler) {
+  return async (context) => {
+    if (typeof handler === "function") {
+      await handler(context);
+    }
+  };
 }
 
-function onResponseError({ response }) {
-  if (response.status === 403) {
-    // const userStore = useUserStore()
-    // const pageStore = usePageStore()
+function createOnResponseError(handler, { skipAuthRedirectOn401 = false } = {}) {
+  return async (context) => {
+    if (typeof handler === "function") {
+      await handler(context);
+    }
 
-    // userStore.token = null
-    // userStore.userInfo = {}
-    // pageStore.loginType = null
+    if (skipAuthRedirectOn401) {
+      return;
+    }
 
-    navigateTo("/", { replace: true });
-  }
+    if (context.response.status === 401) {
+      const authStore = useAuthStore();
+
+      authStore.clearAuth();
+      await navigateTo("/login", { replace: true });
+    }
+  };
 }
 
 /**
@@ -22,23 +32,30 @@ function onResponseError({ response }) {
  */
 export const useServerFetch = (request, opts) => {
   const { origin } = useRequestURL();
-
-  // let token
-  // if (process.client) {
-  //   const userStore = useUserStore()
-  //   token = userStore.token
-  // }
-
-  return useFetch(request, {
-    baseURL: origin,
-    credentials: "include", // 包含 cookie
-    headers: {
-      ...opts?.headers,
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
+  const authStore = useAuthStore();
+  const {
+    baseURL = origin,
+    credentials = "include",
+    headers: customHeaders,
     onResponse,
     onResponseError,
-    ...opts,
+    ...fetchOptions
+  } = opts ?? {};
+
+  authStore.hydrate();
+
+  return useFetch(request, {
+    ...fetchOptions,
+    baseURL,
+    credentials, // 包含 cookie
+    headers: {
+      ...customHeaders,
+      ...(authStore.token
+        ? { Authorization: `Bearer ${authStore.token}` }
+        : {}),
+    },
+    onResponse: createOnResponse(onResponse),
+    onResponseError: createOnResponseError(onResponseError),
   });
 };
 
@@ -47,22 +64,34 @@ export const useServerFetch = (request, opts) => {
  */
 export const useClientFetch = async (request, opts) => {
   const pageStore = usePageStore();
-  // const userStore = useUserStore()
-  // const token = userStore.token
+  const authStore = useAuthStore();
+  const {
+    skipAuthRedirectOn401 = false,
+    headers: customHeaders,
+    onResponse,
+    onResponseError,
+    ...fetchOptions
+  } = opts ?? {};
+
+  authStore.hydrate();
 
   // 顯示載入動畫
   pageStore.showLoading = true;
 
   try {
     const result = await $fetch(request, {
-      ...opts,
+      ...fetchOptions,
       headers: {
-        ...opts?.headers,
-        // ...(token ? { Authorization: `Bearer ${token}` } : {})
+        ...customHeaders,
+        ...(authStore.token
+          ? { Authorization: `Bearer ${authStore.token}` }
+          : {}),
       },
       credentials: "include",
-      onResponse,
-      onResponseError,
+      onResponse: createOnResponse(onResponse),
+      onResponseError: createOnResponseError(onResponseError, {
+        skipAuthRedirectOn401,
+      }),
     });
     return result;
   } catch (error) {
