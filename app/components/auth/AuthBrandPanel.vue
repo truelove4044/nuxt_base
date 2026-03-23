@@ -1,5 +1,6 @@
 <template>
   <section class="auth-brand-panel">
+    <AuthBrandParticles />
     <div class="auth-brand-panel__content">
       <img
         class="auth-brand-panel__logo"
@@ -35,6 +36,7 @@
 <style scoped>
   .auth-brand-panel {
     position: relative;
+    isolation: isolate;
     display: flex;
     align-items: center;
     min-height: 100%;
