@@ -15,9 +15,9 @@
       label="帳號"
       autocomplete="username"
       inputmode="email"
+      placeholder="admin@example.com"
       :error="accountError"
       :disabled="pending"
-      hint="可輸入電子郵件或內部帳號。"
       @update:model-value="emit('update:account', $event)"
       @blur="emit('blur:account', $event)"
     />
@@ -28,6 +28,7 @@
       label="密碼"
       :type="showPassword ? 'text' : 'password'"
       autocomplete="current-password"
+      placeholder="Admin123!"
       :error="passwordError"
       :disabled="pending"
       @update:model-value="emit('update:password', $event)"

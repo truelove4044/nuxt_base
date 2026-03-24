@@ -7,9 +7,13 @@
         目前專案已接上示範登入流程、全域設計 token 與可重用表單元件。之後可在這裡接上真正的儀表板或路由守衛。
       </p>
       <div class="home-page__actions">
-        <NuxtLink class="home-page__link home-page__link--primary" to="/login">
-          回到登入頁
-        </NuxtLink>
+        <button
+          class="home-page__link home-page__link--primary"
+          type="button"
+          @click="handleLogout"
+        >
+          登出
+        </button>
         <NuxtLink class="home-page__link" to="/forgot-password">
           忘記密碼頁
         </NuxtLink>
@@ -19,9 +23,16 @@
 </template>
 
 <script setup>
+  const authStore = useAuthStore();
+
   definePageMeta({
     layout: "default",
   });
+
+  async function handleLogout() {
+    authStore.clearAuth();
+    await navigateTo("/login", { replace: true });
+  }
 </script>
 
 <style scoped>
@@ -66,6 +77,7 @@
 }
 
 .home-page__link {
+  cursor: pointer;
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--color-border);
   border-radius: 999px;

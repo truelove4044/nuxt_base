@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
     "@nuxt/eslint",
     "@pinia/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
   ],
   fonts: {
     families: [

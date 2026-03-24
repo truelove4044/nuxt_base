@@ -37,12 +37,6 @@
           <p class="login-page__support">
             需要重設密碼或開通權限，請聯絡系統管理員。
           </p>
-          <p class="login-page__demo">
-            示範環境帳密：
-            <strong>admin@example.com</strong>
-            /
-            <strong>Admin123!</strong>
-          </p>
         </div>
       </BaseCard>
 
@@ -54,7 +48,7 @@
 </template>
 
 <script setup>
-  import { nextTick, ref, watch } from "vue";
+  import { computed, nextTick, ref, watch } from "vue";
   import { useField, useForm } from "vee-validate";
   import * as yup from "yup";
 
@@ -86,7 +80,12 @@
 
   const loginFormRef = ref(null);
   const authStore = useAuthStore();
-  const pending = ref(false);
+  const pending = computed({
+    get: () => authStore.isLoading,
+    set: (value) => {
+      authStore.isLoading = value;
+    },
+  });
   const formError = ref("");
 
   const { handleSubmit: withValidation, setErrors } = useForm({
@@ -253,8 +252,7 @@
   }
 
   .login-page__description,
-  .login-page__support,
-  .login-page__demo {
+  .login-page__support {
     color: var(--color-text-muted);
     font-size: var(--text-sm);
     line-height: 20px;
@@ -266,11 +264,6 @@
     margin-top: var(--space-6);
     padding-top: var(--space-5);
     border-top: 1px solid rgba(215, 222, 211, 0.9);
-  }
-
-  .login-page__demo strong {
-    color: var(--color-text);
-    font-weight: 600;
   }
 
   .login-page__copyright {
