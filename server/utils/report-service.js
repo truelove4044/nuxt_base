@@ -17,6 +17,11 @@ function formatMonthLabel(month) {
   return `${Number(rawMonth)}月`;
 }
 
+function formatMonthWithYearLabel(month) {
+  const [year, rawMonth] = month.split("-");
+  return `${year}年${Number(rawMonth)}月`;
+}
+
 function formatPercent(value, digits = 1) {
   if (!Number.isFinite(value)) {
     return "--";
@@ -317,7 +322,7 @@ function createAllRow(row) {
     snapshot.target > 0 ? (snapshot.revenue / snapshot.target) * 100 : 0;
 
   return {
-    month: row.label,
+    month: formatMonthWithYearLabel(row.month),
     revenue: snapshot.revenue,
     target: snapshot.target,
     achievementRate,
@@ -338,7 +343,7 @@ function createCountryRow(row, previousRow, country) {
       : null;
 
   return {
-    month: row.label,
+    month: formatMonthWithYearLabel(row.month),
     revenue: snapshot.revenue,
     target: snapshot.target,
     achievementRate,

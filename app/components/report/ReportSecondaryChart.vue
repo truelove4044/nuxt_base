@@ -73,12 +73,28 @@ const option = computed(() => {
   return {
     color: ["#ee7d3b", "#69ba3a"],
     grid: {
-      top: 20,
-      right: 24,
-      bottom: 12,
-      left: 18,
+      top: 16,
+      right: 8,
+      bottom: 8,
+      left: 8,
       containLabel: true,
     },
+    media: [
+      {
+        query: {
+          minWidth: 768,
+        },
+        option: {
+          grid: {
+            top: 20,
+            right: 24,
+            bottom: 12,
+            left: 18,
+            containLabel: true,
+          },
+        },
+      },
+    ],
     legend: {
       show: false,
     },
@@ -172,7 +188,7 @@ const option = computed(() => {
 .report-chart {
   display: grid;
   gap: var(--space-4);
-  padding: var(--space-5);
+  padding: var(--space-5) var(--space-3);
 }
 
 .report-chart__header {
