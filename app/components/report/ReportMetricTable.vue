@@ -1,10 +1,10 @@
 <template>
   <BaseCard class="report-metric-table">
     <header class="report-metric-table__header">
-      <div>
-        <p class="report-metric-table__eyebrow">明細表</p>
-        <h2 class="report-metric-table__title">月別指標明細</h2>
-      </div>
+      <ReportSectionTitle
+        eyebrow="明細表"
+        title="月別指標明細"
+      />
     </header>
 
     <div v-if="!rows.length" class="report-metric-table__empty">
@@ -131,20 +131,7 @@
   }
 
   .report-metric-table__header {
-    display: grid;
-    gap: var(--space-3);
-  }
-
-  .report-metric-table__eyebrow {
-    color: var(--color-accent);
-    font-size: var(--text-sm);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .report-metric-table__title {
-    font-size: clamp(1.3rem, 2vw, 1.7rem);
+    display: block;
   }
 
   .report-metric-table__desktop {

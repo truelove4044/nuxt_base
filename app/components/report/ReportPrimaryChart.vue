@@ -1,8 +1,10 @@
 <template>
   <BaseCard class="report-chart">
     <header class="report-chart__header">
-      <p class="report-chart__eyebrow">主圖</p>
-      <h2 class="report-chart__title">{{ chartData?.title || "月營收 vs 目標" }}</h2>
+      <ReportSectionTitle
+        eyebrow="主圖"
+        :title="chartData?.title || '月營收 vs 目標'"
+      />
     </header>
 
     <div v-if="!hasData" class="report-chart__empty">
@@ -195,24 +197,11 @@ const option = computed(() => {
 .report-chart {
   display: grid;
   gap: var(--space-4);
-  padding: var(--space-5) var(--space-3);
+  padding: var(--space-5);
 }
 
 .report-chart__header {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.report-chart__eyebrow {
-  color: var(--color-accent);
-  font-size: var(--text-sm);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.report-chart__title {
-  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  display: block;
 }
 
 .report-chart__body {
