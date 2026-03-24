@@ -1,10 +1,7 @@
 <template>
   <BaseCard class="report-metric-table">
     <header class="report-metric-table__header">
-      <ReportSectionTitle
-        eyebrow="明細表"
-        title="月別指標明細"
-      />
+      <ReportSectionTitle eyebrow="數據拆解" title="月別指標明細" />
     </header>
 
     <div v-if="!rows.length" class="report-metric-table__empty">

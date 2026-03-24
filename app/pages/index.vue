@@ -2,7 +2,6 @@
   <main id="main-content" class="report-page">
     <section class="report-page__hero">
       <div class="report-page__copy">
-        <p class="report-page__eyebrow">Performance Overview</p>
         <h1 class="report-page__title">營運報表總覽</h1>
       </div>
     </section>
@@ -145,8 +144,8 @@
 
   .report-page__title {
     max-width: 16ch;
-    font-size: clamp(2rem, 5vw, 3rem);
-    line-height: 1.04;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    line-height: 1.6;
   }
 
   .report-page__feedback {
