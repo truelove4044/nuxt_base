@@ -1,100 +1,178 @@
 <template>
-  <main id="main-content" class="home-page">
-    <BaseCard class="home-page__card">
-      <p class="home-page__eyebrow">Admin Home</p>
-      <h1 class="home-page__title">登入成功後會先抵達這個首頁示意頁。</h1>
-      <p class="home-page__text">
-        目前專案已接上示範登入流程、全域設計 token 與可重用表單元件。之後可在這裡接上真正的儀表板或路由守衛。
-      </p>
-      <div class="home-page__actions">
-        <button
-          class="home-page__link home-page__link--primary"
-          type="button"
-          @click="handleLogout"
-        >
-          登出
-        </button>
-        <NuxtLink class="home-page__link" to="/forgot-password">
-          忘記密碼頁
-        </NuxtLink>
+  <main id="main-content" class="report-page">
+    <section class="report-page__hero">
+      <div class="report-page__copy">
+        <p class="report-page__eyebrow">Performance Overview</p>
+        <h1 class="report-page__title">營運表現總覽</h1>
       </div>
-    </BaseCard>
+    </section>
+
+    <ReportFilterBar
+      :country="reportStore.country"
+      :range-preset="reportStore.rangePreset"
+      :start-date="reportStore.startDate"
+      :end-date="reportStore.endDate"
+      :date-error="dateError"
+      @update:country="reportStore.setCountry"
+      @update:range-preset="reportStore.setRangePreset"
+      @update:start-date="reportStore.setStartDate"
+      @update:end-date="reportStore.setEndDate"
+    />
+
+    <div
+      v-if="reportStore.error && !reportStore.loading"
+      class="report-page__feedback"
+    >
+      <ReportEmptyState
+        title="目前無法整理這組報表"
+        :description="reportStore.error"
+        action-label="回到近 12 個月"
+        @action="resetToDefaultRange"
+      >
+        <template #icon>!</template>
+      </ReportEmptyState>
+    </div>
+
+    <ReportKpiGrid
+      :items="summary?.headline || []"
+      :loading="reportStore.loading"
+    />
+
+    <section class="report-page__chart-grid">
+      <ReportPrimaryChart :chart-data="summary?.primaryTrend">
+        <template #empty>
+          <ReportEmptyState
+            title="主圖暫時沒有資料"
+            description="調整篩選條件後，這裡會顯示營收與目標的主要趨勢。"
+            action-label="回到近 12 個月"
+            @action="resetToDefaultRange"
+          >
+            <template #icon>↗</template>
+          </ReportEmptyState>
+        </template>
+      </ReportPrimaryChart>
+
+      <ReportSecondaryChart :chart-data="summary?.secondaryTrend">
+        <template #empty>
+          <ReportEmptyState
+            title="輔助圖暫時沒有資料"
+            description="這裡會補上達成率與廣告投入，協助判斷效率與投入是否失衡。"
+            action-label="回到近 12 個月"
+            @action="resetToDefaultRange"
+          >
+            <template #icon>◎</template>
+          </ReportEmptyState>
+        </template>
+      </ReportSecondaryChart>
+    </section>
+
+    <ReportMetricTable
+      :columns="details?.columns || []"
+      :rows="details?.rows || []"
+      :totals="details?.totals || null"
+    >
+      <template #empty>
+        <ReportEmptyState
+          title="目前查無符合條件的月別資料"
+          description="可以切回總覽或縮短自訂日期區間，先回到有資料的範圍。"
+          action-label="回到近 12 個月"
+          @action="resetToDefaultRange"
+        >
+          <template #icon>□</template>
+        </ReportEmptyState>
+      </template>
+    </ReportMetricTable>
   </main>
 </template>
 
 <script setup>
-  const authStore = useAuthStore();
+  import { computed } from "vue";
 
   definePageMeta({
-    layout: "default",
+    layout: "dashboard",
   });
 
-  async function handleLogout() {
-    authStore.clearAuth();
-    await navigateTo("/login", { replace: true });
+  useHead({
+    title: "整體報表總覽",
+    meta: [
+      {
+        name: "description",
+        content:
+          "ForwardMall 簡化版整體報表首頁，先看摘要卡與核心圖，再往下讀月別明細。",
+      },
+    ],
+  });
+
+  const reportStore = useReportStore();
+  const { summary, details } = useReportDashboard();
+
+  const dateError = computed(() =>
+    reportStore.isCustomRange && reportStore.startDate > reportStore.endDate
+      ? "開始日期不可晚於結束日期。"
+      : "",
+  );
+
+  function resetToDefaultRange() {
+    reportStore.setRangePreset("last12m");
   }
 </script>
 
 <style scoped>
-.home-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100dvh;
-  padding: var(--space-8) var(--space-5);
-}
-
-.home-page__card {
-  width: min(100%, 720px);
-  padding: var(--space-6);
-}
-
-.home-page__eyebrow {
-  color: var(--color-accent);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  line-height: 20px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.home-page__title {
-  margin-top: var(--space-3);
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  line-height: 1.15;
-}
-
-.home-page__text {
-  margin-top: var(--space-4);
-  color: var(--color-text-muted);
-}
-
-.home-page__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-top: var(--space-6);
-}
-
-.home-page__link {
-  cursor: pointer;
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  color: var(--color-text);
-  font-size: var(--text-sm);
-  font-weight: 500;
-}
-
-.home-page__link--primary {
-  border-color: transparent;
-  background: var(--color-primary-600);
-  color: #fff;
-}
-
-@media (min-width: 768px) {
-  .home-page__card {
-    padding: var(--space-10);
+  .report-page {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-4);
   }
-}
+
+  .report-page__hero {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .report-page__copy {
+    display: grid;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .report-page__eyebrow {
+    color: var(--color-accent);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .report-page__title {
+    max-width: 16ch;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    line-height: 1.04;
+  }
+
+  .report-page__feedback {
+    display: grid;
+  }
+
+  .report-page__chart-grid {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 960px) {
+    .report-page {
+      gap: var(--space-6);
+      padding: var(--space-5);
+    }
+
+    .report-page__chart-grid {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      align-items: stretch;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .report-page {
+      padding: var(--space-6) clamp(32px, 4vw, 52px);
+    }
+  }
 </style>
