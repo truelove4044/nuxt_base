@@ -13,16 +13,7 @@
 
     <template v-else>
       <div class="report-chart__body">
-        <ClientOnly>
-          <VChart class="report-chart__canvas" :option="option" autoresize />
-
-          <template #fallback>
-            <div
-              class="report-chart__canvas report-chart__canvas--placeholder"
-              aria-hidden="true"
-            />
-          </template>
-        </ClientOnly>
+        <VChart class="report-chart__canvas" :option="option" autoresize />
 
         <div class="report-chart__legend" aria-label="圖例">
           <div
