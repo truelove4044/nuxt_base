@@ -66,12 +66,14 @@
     ],
   });
 
+  const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const validationSchema = yup.object({
     account: yup
       .string()
       .trim()
       .required("請輸入帳號。")
-      .email("請輸入有效的電子郵件地址。"),
+      .matches(EMAIL_PATTERN, "請輸入有效的電子郵件地址。"),
     password: yup
       .string()
       .required("請輸入密碼。")
