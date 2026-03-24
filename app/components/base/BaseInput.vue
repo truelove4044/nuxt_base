@@ -145,7 +145,7 @@ defineExpose({
 }
 
 .has-suffix .base-input__field {
-  padding-right: 80px;
+  padding-right: 60px;
 }
 
 .base-input__field::placeholder {
@@ -166,6 +166,9 @@ defineExpose({
   position: absolute;
   top: 50%;
   right: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transform: translateY(-50%);
 }
 

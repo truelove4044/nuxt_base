@@ -40,9 +40,18 @@
           type="button"
           :disabled="pending"
           :aria-label="showPassword ? '隱藏密碼' : '顯示密碼'"
+          :aria-pressed="showPassword"
           @click="showPassword = !showPassword"
         >
-          {{ showPassword ? "隱藏" : "顯示" }}
+          <Icon
+            class="login-form__toggle-icon"
+            :name="
+              showPassword
+                ? 'heroicons:eye-slash-20-solid'
+                : 'heroicons:eye-20-solid'
+            "
+            aria-hidden="true"
+          />
         </button>
       </template>
     </BaseInput>
@@ -159,21 +168,35 @@ defineExpose({
 }
 
 .login-form__toggle {
-  padding: var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
   border-radius: 999px;
   background: transparent;
   color: var(--color-primary-600);
-  font-size: var(--text-sm);
-  font-weight: 500;
   cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .login-form__toggle:hover {
   color: var(--color-primary-700);
+  background: rgba(var(--color-primary-600-rgb), 0.08);
+}
+
+.login-form__toggle-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .login-form__toggle:disabled {
   color: var(--color-text-soft);
+  background: transparent;
   cursor: not-allowed;
 }
 
