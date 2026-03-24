@@ -37,23 +37,54 @@
         </NuxtLink>
       </div>
 
-      <div class="dashboard-header__user" aria-label="目前登入使用者">
-        <span class="dashboard-header__avatar-wrap">
-          <span class="dashboard-header__avatar">{{ userInitials }}</span>
-          <span class="dashboard-header__presence" aria-hidden="true" />
-        </span>
-        <div class="dashboard-header__user-copy">
-          <strong>{{ userName }}</strong>
-          <span class="dashboard-header__user-meta">
-            <small>{{ userRoleLabel }}</small>
-            <button
-              class="dashboard-header__logout"
-              type="button"
-              @click="handleLogout"
-            >
-              登出
-            </button>
+      <div class="dashboard-header__actions">
+        <button
+          class="dashboard-header__mobile-logout"
+          type="button"
+          aria-label="登出"
+          @click="handleLogout"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M10 7.5H7.5A1.5 1.5 0 0 0 6 9v6a1.5 1.5 0 0 0 1.5 1.5H10m3.5-7 3 2.5-3 2.5m2.5-2.5H10.5M14 6l2.5 2.5M14 18l2.5-2.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+            />
+          </svg>
+          <span class="dashboard-header__mobile-logout-label">登出</span>
+        </button>
+
+        <div class="dashboard-header__user" aria-label="目前登入使用者">
+          <span class="dashboard-header__avatar-wrap">
+            <span class="dashboard-header__avatar">{{ userInitials }}</span>
+            <span class="dashboard-header__presence" aria-hidden="true" />
           </span>
+          <div class="dashboard-header__user-copy">
+            <strong>{{ userName }}</strong>
+            <span class="dashboard-header__user-meta">
+              <small>{{ userRoleLabel }}</small>
+              <button
+                class="dashboard-header__logout"
+                type="button"
+                @click="handleLogout"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M10 7.5H7.5A1.5 1.5 0 0 0 6 9v6a1.5 1.5 0 0 0 1.5 1.5H10m3.5-7 3 2.5-3 2.5m2.5-2.5H10.5M14 6l2.5 2.5M14 18l2.5-2.5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.8"
+                  />
+                </svg>
+                <span class="dashboard-header__logout-label">登出</span>
+              </button>
+            </span>
+          </div>
         </div>
       </div>
     </header>
@@ -350,6 +381,13 @@
     height: 24px;
   }
 
+  .dashboard-header__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
   .dashboard-sidebar__eyebrow,
   .dashboard-sidebar__section-title {
     color: var(--color-accent);
@@ -361,12 +399,59 @@
 
   .dashboard-header__user {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, auto);
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-3);
+    flex: 0 0 auto;
     min-width: 0;
-    padding-left: var(--space-3);
-    border-left: 1px solid rgba(196, 201, 186, 0.9);
+  }
+
+  .dashboard-header__logout,
+  .dashboard-header__mobile-logout {
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 var(--space-3);
+    border: 1px solid rgba(var(--color-danger-rgb), 0.18);
+    border-radius: 14px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 244, 244, 0.98) 100%
+    );
+    color: var(--color-danger);
+    box-shadow: 0 10px 22px rgba(181, 69, 69, 0.08);
+    cursor: pointer;
+    transition:
+      transform 0.14s ease,
+      color 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .dashboard-header__logout {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .dashboard-header__mobile-logout {
+    display: none;
+  }
+
+  .dashboard-header__logout svg,
+  .dashboard-header__mobile-logout svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .dashboard-header__logout-label,
+  .dashboard-header__mobile-logout-label {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
   }
 
   .dashboard-header__avatar-wrap {
@@ -400,41 +485,65 @@
 
   .dashboard-header__user-copy {
     display: grid;
-    gap: 2px;
+    grid-template-columns: minmax(0, auto) auto;
+    grid-template-areas:
+      "name logout"
+      "role logout";
+    column-gap: var(--space-3);
+    row-gap: 2px;
+    align-items: center;
     min-width: 0;
   }
 
   .dashboard-header__user-copy strong {
+    grid-area: name;
     font-size: 0.875rem;
     font-weight: 800;
     line-height: 1.1;
+    white-space: nowrap;
   }
 
   .dashboard-header__user-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-width: 0;
+    display: contents;
   }
 
   .dashboard-header__user-meta small {
+    grid-area: role;
     color: var(--color-text-muted);
     font-size: 0.72rem;
+    line-height: 1.2;
+    white-space: nowrap;
   }
 
   .dashboard-header__logout {
-    min-height: auto;
-    padding: 0;
-    background: transparent;
-    color: var(--color-primary-700);
-    font-size: 0.72rem;
-    font-weight: 700;
-    cursor: pointer;
+    grid-area: logout;
+    color: var(--color-danger);
+    align-self: center;
   }
 
   .dashboard-header__logout:hover,
+  .dashboard-header__mobile-logout:hover,
   .dashboard-header__logout:focus-visible {
     color: var(--color-accent);
+  }
+
+  .dashboard-header__mobile-logout:hover {
+    border-color: rgba(var(--color-danger-rgb), 0.28);
+    background: rgba(255, 242, 242, 0.98);
+    box-shadow: 0 12px 24px rgba(181, 69, 69, 0.14);
+  }
+
+  .dashboard-header__mobile-logout:active {
+    transform: translateY(1px);
+  }
+
+  .dashboard-header__mobile-logout:focus-visible {
+    color: var(--color-danger);
+    outline: 0;
+    border-color: rgba(var(--color-danger-rgb), 0.34);
+    box-shadow:
+      0 0 0 4px rgba(var(--color-danger-rgb), 0.18),
+      0 12px 24px rgba(181, 69, 69, 0.12);
   }
 
   .dashboard-layout__scrim {
@@ -582,16 +691,28 @@
 
   @media (max-width: 767px) {
     .dashboard-header {
-      padding: var(--space-3) var(--space-4);
+      padding: var(--space-3) var(--space-3);
+    }
+
+    .dashboard-header__leading {
+      gap: var(--space-2);
+    }
+
+    .dashboard-header__actions {
+      min-width: 44px;
+    }
+
+    .dashboard-header__mobile-logout {
+      display: inline-flex;
+      padding-inline: 10px;
+    }
+
+    .dashboard-header__user {
+      display: none;
     }
 
     .dashboard-header__user-meta small {
       display: none;
-    }
-
-    .dashboard-header__user {
-      min-width: auto;
-      padding-left: var(--space-2);
     }
 
     .dashboard-header__logout {

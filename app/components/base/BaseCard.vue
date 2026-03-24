@@ -15,13 +15,10 @@
 
 @media (hover: hover) and (pointer: fine) {
   .base-card {
-    transition:
-      transform 0.24s ease,
-      box-shadow 0.24s ease;
+    transition: box-shadow 0.24s ease;
   }
 
   .base-card:hover {
-    transform: translateY(-1px);
     box-shadow: var(--shadow-card-hover);
   }
 }

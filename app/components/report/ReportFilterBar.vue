@@ -37,19 +37,26 @@
     </div>
 
     <div v-if="rangePreset === 'custom'" class="report-filter-bar__dates">
-      <BaseInput
+      <BaseDatePicker
         label="開始日期"
-        type="date"
         :model-value="startDate"
-        :error="dateError"
+        :max-date="endDate"
         @update:model-value="$emit('update:startDate', $event)"
       />
-      <BaseInput
+      <BaseDatePicker
         label="結束日期"
-        type="date"
         :model-value="endDate"
+        :min-date="startDate"
         @update:model-value="$emit('update:endDate', $event)"
       />
+      <p
+        v-if="dateError"
+        class="report-filter-bar__date-error"
+        role="alert"
+        aria-live="polite"
+      >
+        {{ dateError }}
+      </p>
     </div>
   </BaseCard>
 </template>
@@ -158,6 +165,12 @@ defineProps({
   gap: var(--space-4);
 }
 
+.report-filter-bar__date-error {
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+  line-height: 20px;
+}
+
 @media (min-width: 768px) {
   .report-filter-bar {
     grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr);
@@ -167,6 +180,10 @@ defineProps({
   .report-filter-bar__dates {
     grid-column: 1 / -1;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .report-filter-bar__date-error {
+    grid-column: 1 / -1;
   }
 }
 </style>

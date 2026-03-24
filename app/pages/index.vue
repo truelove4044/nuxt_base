@@ -145,7 +145,7 @@
 
   .report-page__title {
     max-width: 16ch;
-    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-size: clamp(2rem, 5vw, 3rem);
     line-height: 1.04;
   }
 

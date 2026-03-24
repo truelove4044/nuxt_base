@@ -208,7 +208,7 @@ function buildHeadline(rows, previousRows, country) {
       unit: "percent",
       formattedValue: formatPercent(achievementRate),
       helper: `目標 NT$ ${toCurrency(totalTarget)}`,
-      delta: formatDelta(achievementRate - previousAchievementRate, "pt"),
+      delta: formatDelta(achievementRate - previousAchievementRate, "%"),
       trend:
         achievementRate > previousAchievementRate
           ? "up"
