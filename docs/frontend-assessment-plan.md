@@ -195,44 +195,46 @@ Failure `401`:
 報表頁可拆為以下區塊：
 
 - 頁首摘要區：顯示頁面標題與簡要說明。
-- 篩選區：開始日期、結束日期、分類選單。
-- 圖表區：至少一張折線圖，可選配圓餅圖。
-- 資料表格區：展示詳細訂單資料。
-- 分頁區：控制頁碼與每頁筆數。
+- 篩選區：國別切換、時間區間切換、自訂日期區間。
+- KPI 摘要區：顯示累計營業額、目標達成率、本月預測、廣告投入。
+- 圖表區：主圖（營收 / 目標 / 預測）與輔助圖（達成率 / 廣告投入）。
+- 資料表格區：展示月別指標明細（非訂單明細）。
 - 空狀態區：處理查無資料情境。
 
 ### 篩選功能規格
 
 篩選條件包括：
 
+- `country: "all" | "indonesia" | "philippines"`
+- `rangePreset: "last12m" | "ytd" | "custom"`
 - `startDate: string`
 - `endDate: string`
-- `category: string`
-- `page: number`
-- `pageSize: number`
 
 互動規則：
 
-- 日期欄位先使用原生 `input[type="date"]`。
-- 分類選單可用 Headless UI Listbox 實作。
-- 預設每頁 `10` 筆。
+- 日期欄位採 `BaseDatePicker` 元件（非原生 `input[type="date"]`）。
+- `BaseDatePicker` 的資料值格式固定為 `yyyy-MM-dd`。
+- `開始日期` 受 `endDate` 上限限制；`結束日期` 受 `startDate` 下限限制。
+- 日期選擇器固定為 date-only，不顯示時間選擇。
+- `rangePreset !== "custom"` 時，`startDate` / `endDate` 由 preset 自動帶入。
+- `rangePreset === "custom"` 時，才顯示日期輸入區。
 - 篩選條件改變時，自動重抓資料。
-- 日期或分類變更時，分頁重設回第 `1` 頁。
-- 為避免高頻觸發，查詢請求採 debounce 處理。
+- 查詢請求採 debounce（現況約 260ms）避免高頻觸發。
+- 自訂區間若 `startDate > endDate`，前端顯示錯誤提示且不送出查詢。
 
 ### 圖表呈現規格
 
 圖表套件固定採 `ECharts`。
 
-第一版至少實作一張折線圖：
+目前報表圖表為兩張：
 
-- X 軸：日期
-- Y 軸：金額或訂單量
+- 主圖：`月營收 vs 目標`
+  - 序列：營收（line）、目標（bar）、預測（line）
+- 輔助圖：`達成率與廣告投入`
+  - 序列：達成率（line）、廣告投入（bar）
+- X 軸：月份
+- Y 軸：依序列型別顯示百分比或金額
 - 資料來自 `GET /api/report/summary`
-
-可選加分項：
-
-- 再補一張分類占比圓餅圖，呈現各類別的營收占比。
 
 圖表區需處理三種狀態：
 
@@ -242,71 +244,97 @@ Failure `401`:
 
 ### 資料表格規格
 
-表格欄位固定如下：
+表格為「月別指標明細」，由 `columns / rows / totals` 驅動。
 
-- `orderNo`
-- `orderDate`
-- `category`
-- `amount`
-- `paymentStatus`
-- `orderStatus`
-- `customerName`
+欄位規則如下：
 
-欄位對應中文可顯示為：
+- `country = "all"` 時：
+  - `month`、`revenue`、`target`、`achievementRate`、`indonesiaRevenue`、`philippinesRevenue`、`adSpend`
+- `country = "indonesia" | "philippines"` 時：
+  - `month`、`revenue`、`target`、`achievementRate`、`forecast`、`adSpend`、`momChange`
 
-- 訂單號
-- 下單時間
-- 分類
-- 金額
-- 付款狀態
-- 訂單狀態
-- 會員名稱
-
-分頁規則：
-
-- 查詢參數包含 `page` 與 `pageSize`。
-- API 回傳 `total`、`page`、`pageSize`。
-- 切換分頁時只更新表格資料與總筆數顯示。
+資料列以月份聚合，不是訂單層級資料。
 
 ### API 規格
 
-#### `GET /api/report/summary?startDate&endDate&category`
+#### `GET /api/report/summary?country&rangePreset&startDate&endDate`
+
+Query 驗證規則：
+
+- `country` 僅允許 `all`、`indonesia`、`philippines`
+- `rangePreset` 僅允許 `last12m`、`ytd`、`custom`
+- 當 `rangePreset = custom` 時，必須提供 `startDate` 與 `endDate`
 
 Response:
 
 ```json
 {
-  "trend": [
-    { "date": "2026-03-01", "amount": 3200, "orders": 12 },
-    { "date": "2026-03-02", "amount": 5400, "orders": 18 }
+  "headline": [
+    {
+      "key": "revenue",
+      "label": "累計營業額",
+      "value": 495043433,
+      "unit": "TWD",
+      "formattedValue": "NT$ 495,043,433",
+      "delta": "+409.4%",
+      "trend": "up",
+      "helper": "12 個月份"
+    }
   ],
-  "categoryShare": [
-    { "name": "3C", "value": 12000 },
-    { "name": "服飾", "value": 8600 }
-  ]
+  "primaryTrend": {
+    "title": "月營收 vs 目標",
+    "description": "總覽近期待成情況",
+    "series": [
+      {
+        "label": "營收",
+        "unit": "TWD",
+        "type": "line",
+        "points": [{ "date": "2025-04", "label": "4月", "value": 28159490 }]
+      }
+    ]
+  },
+  "secondaryTrend": {
+    "title": "達成率與廣告投入",
+    "description": "",
+    "series": [
+      {
+        "label": "達成率",
+        "unit": "percent",
+        "type": "line",
+        "points": [{ "date": "2025-04", "label": "4月", "value": 95.1 }]
+      }
+    ]
+  },
+  "updatedAt": "2026-03-25T10:20:30.000Z"
 }
 ```
 
-#### `GET /api/report/orders?startDate&endDate&category&page&pageSize`
+#### `GET /api/report/details?country&rangePreset&startDate&endDate`
 
 Response:
 
 ```json
 {
-  "items": [
+  "columns": [
+    { "key": "month", "label": "月份", "align": "left", "format": "text" },
+    { "key": "revenue", "label": "總營收", "align": "right", "format": "currency" },
+    { "key": "target", "label": "總目標", "align": "right", "format": "currency" },
+    { "key": "achievementRate", "label": "達成率", "align": "right", "format": "percent" }
+  ],
+  "rows": [
     {
-      "orderNo": "ORD202603230001",
-      "orderDate": "2026-03-23 10:30:00",
-      "category": "3C",
-      "amount": 2990,
-      "paymentStatus": "paid",
-      "orderStatus": "shipped",
-      "customerName": "王小明"
+      "month": "2025年4月",
+      "revenue": 28159490,
+      "target": 29600000,
+      "achievementRate": 95.1
     }
   ],
-  "total": 48,
-  "page": 1,
-  "pageSize": 10
+  "totals": {
+    "month": "合計",
+    "revenue": 495043433,
+    "target": 505300000,
+    "achievementRate": 98.0
+  }
 }
 ```
 
@@ -314,17 +342,17 @@ Response:
 
 報表頁資料流如下：
 
-1. 首次進入首頁時，用預設區間呼叫 summary 與 orders API。
+1. 首次進入首頁時，以預設條件呼叫 summary 與 details API。
 2. 篩選條件變更後，以 debounce 方式重新查詢。
-3. summary 與 orders 共用同一組 filter state。
-4. 若表格切換分頁，只重抓 orders API。
+3. summary 與 details 共用同一組 filter state。
+4. 自訂區間非法（開始日晚於結束日）時，不送 API 並顯示錯誤訊息。
 
 ### 空狀態與錯誤狀態
 
 空狀態必須明確呈現，不可只留白：
 
 - 圖表區顯示 Empty State 圖示、標題與提示文案。
-- 表格區顯示「目前查無符合條件的訂單資料」。
+- 表格區顯示「目前查無符合條件的月別資料」。
 - 可保留一個「重設篩選條件」按鈕作為補強 UX。
 
 錯誤處理建議：
@@ -334,17 +362,16 @@ Response:
 
 ### 效能策略
 
-本次第一版以後端分頁思路規劃：
+本次第一版以月別聚合資料為主：
 
-- 前端僅載入當前頁資料。
-- 大量訂單資料不一次全取。
-- 虛擬捲軸列為延伸優化，不納入本次必做版本。
+- 查詢使用 debounce，降低重複請求。
+- summary 與 details 並行請求，縮短等待時間。
+- 視覺層需清楚區分 loading / 有資料 / 無資料。
 
 ### 成功標準
 
 - 報表頁首次進入即可載入預設資料。
 - 條件變更時圖表與表格可同步更新。
-- 分頁可正常切換並保留篩選條件。
 - 無資料時可正確呈現空狀態。
 - 請求中有 loading 呈現，避免畫面突然閃空。
 
@@ -378,25 +405,55 @@ type AuthState = {
 
 ```ts
 type ReportFilters = {
+  country: "all" | "indonesia" | "philippines";
+  rangePreset: "last12m" | "ytd" | "custom";
   startDate: string;
   endDate: string;
-  category: string;
-  page: number;
-  pageSize: number;
 };
 ```
 
-### 表格列型別
+### 報表回傳型別
 
 ```ts
-type OrderRow = {
-  orderNo: string;
-  orderDate: string;
-  category: string;
-  amount: number;
-  paymentStatus: string;
-  orderStatus: string;
-  customerName: string;
+type TrendPoint = {
+  date: string;
+  label: string;
+  value: number;
+};
+
+type TrendSeries = {
+  label: string;
+  unit: "TWD" | "percent";
+  type: "line" | "bar";
+  points: TrendPoint[];
+};
+
+type HeadlineItem = {
+  key: "revenue" | "achievementRate" | "forecast" | "adSpend";
+  label: string;
+  value: number | null;
+  unit: "TWD" | "percent";
+  formattedValue: string;
+  delta: string;
+  trend: "up" | "down" | "neutral";
+  helper: string;
+};
+
+type DetailColumn = {
+  key: string;
+  label: string;
+  align: "left" | "right";
+  format: "text" | "currency" | "percent";
+};
+
+type DetailRow = {
+  month: string;
+  [key: string]: string | number | null;
+};
+
+type DetailTotals = {
+  month: string;
+  [key: string]: string | number | null;
 };
 ```
 
@@ -416,9 +473,11 @@ type OrderRow = {
 
 ### 報表頁
 
-- 初次進入時會載入預設日期區間與預設分類資料。
-- 日期或分類變更後，圖表與表格同步刷新。
-- 分頁切換只更新表格資料與總筆數。
+- 初次進入時會載入預設國別與預設時間區間資料。
+- 國別或時間區間變更後，圖表與表格同步刷新。
+- `rangePreset = custom` 時顯示日期輸入，其他 preset 不顯示。
+- 日期選擇器資料值格式固定為 `yyyy-MM-dd`，且不含時間。
+- 自訂區間開始日晚於結束日時，不觸發查詢並顯示錯誤訊息。
 - 無資料區間時，圖表區與表格區皆顯示空狀態。
 - 請求過程中顯示 loading skeleton 或 spinner。
 - 未登入直接訪問 `/` 時會被導回 `/login`。
@@ -432,8 +491,8 @@ type OrderRow = {
 3. 擴充 `useApiFetch`，完成 Token 注入與 `401` 攔截。
 4. 建立 `/api/login` mock API 與登入頁表單。
 5. 建立 auth middleware 與登入導頁邏輯。
-6. 建立報表篩選區、圖表區、資料表格與分頁元件。
-7. 建立 `/api/report/summary` 與 `/api/report/orders` mock API。
+6. 建立報表篩選區、KPI 區、圖表區與月別明細表格元件。
+7. 建立 `/api/report/summary` 與 `/api/report/details` mock API。
 8. 串接首頁報表查詢、空狀態與 loading 狀態。
 9. 依驗收案例逐項檢查互動與資料流。
 
@@ -445,4 +504,5 @@ type OrderRow = {
 - 圖表套件固定採 `ECharts`。
 - 後端 API 以 Nuxt `server/api` mock 實作，先滿足展示需求，不串接真實後端。
 - 報表頁即為首頁，不額外新增 `/report` 路由。
-- 第一版優先滿足題目需求與可展示性，不額外導入虛擬捲軸或複雜權限矩陣。
+- 本文件以現況（as-is）為準，不回頭套用舊版訂單查詢規格。
+- 若後續要恢復訂單層級查詢與分頁，另開 v2 規格文件處理。

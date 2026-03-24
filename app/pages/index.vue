@@ -3,7 +3,7 @@
     <section class="report-page__hero">
       <div class="report-page__copy">
         <p class="report-page__eyebrow">Performance Overview</p>
-        <h1 class="report-page__title">營運表現總覽</h1>
+        <h1 class="report-page__title">營運報表總覽</h1>
       </div>
     </section>
 
