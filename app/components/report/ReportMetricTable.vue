@@ -9,7 +9,7 @@
     </div>
 
     <template v-else>
-      <div class="report-metric-table__desktop">
+      <div class="report-metric-table__desktop app-scrollbar app-scrollbar--table">
         <table>
           <thead>
             <tr>

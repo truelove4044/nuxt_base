@@ -1,5 +1,9 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
+import {
+  REPORT_DATA_END_MONTH,
+  REPORT_DATA_END_YEAR,
+} from "../../shared/report-data-config.js";
 
 function formatDateInput(date) {
   const year = date.getFullYear();
@@ -9,19 +13,53 @@ function formatDateInput(date) {
   return `${year}-${month}-${day}`;
 }
 
-function getDefaultRangePreset(preset) {
-  const now = new Date();
-  const end = new Date(now.getFullYear(), now.getMonth(), 1);
+function getQuarterRange(year, quarter) {
+  const quarterStartMonthMap = {
+    q1: 0,
+    q2: 3,
+    q3: 6,
+    q4: 9,
+  };
+  const startMonth = quarterStartMonthMap[quarter] ?? 0;
 
-  if (preset === "ytd") {
+  return {
+    startDate: formatDateInput(new Date(year, startMonth, 1)),
+    endDate: formatDateInput(new Date(year, startMonth + 2, 1)),
+  };
+}
+
+function getDefaultRangePreset(preset) {
+  const end = new Date(REPORT_DATA_END_YEAR, REPORT_DATA_END_MONTH - 1, 1);
+  const year = REPORT_DATA_END_YEAR;
+  const endMonthIndex = REPORT_DATA_END_MONTH - 1;
+
+  if (preset === "last3m") {
     return {
-      startDate: formatDateInput(new Date(now.getFullYear(), 0, 1)),
+      startDate: formatDateInput(new Date(year, endMonthIndex - 2, 1)),
       endDate: formatDateInput(end),
     };
   }
 
+  if (preset === "last6m") {
+    return {
+      startDate: formatDateInput(new Date(year, endMonthIndex - 5, 1)),
+      endDate: formatDateInput(end),
+    };
+  }
+
+  if (preset === "ytd") {
+    return {
+      startDate: formatDateInput(new Date(year, 0, 1)),
+      endDate: formatDateInput(end),
+    };
+  }
+
+  if (["q1", "q2", "q3", "q4"].includes(preset)) {
+    return getQuarterRange(year, preset);
+  }
+
   return {
-    startDate: formatDateInput(new Date(now.getFullYear(), now.getMonth() - 11, 1)),
+    startDate: formatDateInput(new Date(year, endMonthIndex - 11, 1)),
     endDate: formatDateInput(end),
   };
 }

@@ -1,4 +1,4 @@
-import { getMonthlyReportData } from "./report-data";
+import { getMonthlyReportData } from "./report-data.js";
 
 const COUNTRY_LABELS = {
   all: "總覽",
@@ -49,10 +49,61 @@ function getLatestMonthDate(data) {
 
 function getPresetRange(rangePreset, data) {
   const latestMonthDate = getLatestMonthDate(data);
+  const latestYear = latestMonthDate.getFullYear();
+
+  if (rangePreset === "last3m") {
+    return {
+      start: new Date(
+        latestMonthDate.getFullYear(),
+        latestMonthDate.getMonth() - 2,
+        1,
+      ),
+      end: latestMonthDate,
+    };
+  }
+
+  if (rangePreset === "last6m") {
+    return {
+      start: new Date(
+        latestMonthDate.getFullYear(),
+        latestMonthDate.getMonth() - 5,
+        1,
+      ),
+      end: latestMonthDate,
+    };
+  }
+
+  if (rangePreset === "q1") {
+    return {
+      start: new Date(latestYear, 0, 1),
+      end: new Date(latestYear, 2, 1),
+    };
+  }
+
+  if (rangePreset === "q2") {
+    return {
+      start: new Date(latestYear, 3, 1),
+      end: new Date(latestYear, 5, 1),
+    };
+  }
+
+  if (rangePreset === "q3") {
+    return {
+      start: new Date(latestYear, 6, 1),
+      end: new Date(latestYear, 8, 1),
+    };
+  }
+
+  if (rangePreset === "q4") {
+    return {
+      start: new Date(latestYear, 9, 1),
+      end: new Date(latestYear, 11, 1),
+    };
+  }
 
   if (rangePreset === "ytd") {
     return {
-      start: new Date(latestMonthDate.getFullYear(), 0, 1),
+      start: new Date(latestYear, 0, 1),
       end: latestMonthDate,
     };
   }

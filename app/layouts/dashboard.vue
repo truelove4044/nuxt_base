@@ -613,6 +613,11 @@
 
   .dashboard-sidebar__link--muted {
     color: rgba(91, 87, 84, 0.72);
+    opacity: 0.6;
+  }
+
+  .dashboard-sidebar__link--muted:hover {
+    cursor: not-allowed;
   }
 
   .dashboard-sidebar__link--muted .dashboard-sidebar__icon,

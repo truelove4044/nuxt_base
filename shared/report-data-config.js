@@ -1,0 +1,4 @@
+export const REPORT_DATA_START_YEAR = 2024;
+export const REPORT_DATA_START_MONTH = 1;
+export const REPORT_DATA_END_YEAR = 2026;
+export const REPORT_DATA_END_MONTH = 12;

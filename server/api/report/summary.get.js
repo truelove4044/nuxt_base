@@ -1,7 +1,17 @@
 import { getReportDashboard } from "../../utils/report-service";
 
 const validCountries = new Set(["all", "indonesia", "philippines"]);
-const validPresets = new Set(["last12m", "ytd", "custom"]);
+const validPresets = new Set([
+  "last3m",
+  "last6m",
+  "last12m",
+  "q1",
+  "q2",
+  "q3",
+  "q4",
+  "ytd",
+  "custom",
+]);
 
 function assertValidQuery(query) {
   if (!validCountries.has(query.country)) {

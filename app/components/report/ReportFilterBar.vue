@@ -69,7 +69,13 @@ const countryOptions = [
 ];
 
 const presetOptions = [
+  { value: "last3m", label: "近 3 個月" },
+  { value: "last6m", label: "近 6 個月" },
   { value: "last12m", label: "近 12 個月" },
+  { value: "q1", label: "Q1 合計" },
+  { value: "q2", label: "Q2 合計" },
+  { value: "q3", label: "Q3 合計" },
+  { value: "q4", label: "Q4 合計" },
   { value: "ytd", label: "今年累計" },
   { value: "custom", label: "自訂" },
 ];

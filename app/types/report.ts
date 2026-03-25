@@ -1,6 +1,15 @@
 export type ReportCountry = "all" | "indonesia" | "philippines";
 
-export type ReportRangePreset = "last12m" | "ytd" | "custom";
+export type ReportRangePreset =
+  | "last3m"
+  | "last6m"
+  | "last12m"
+  | "q1"
+  | "q2"
+  | "q3"
+  | "q4"
+  | "ytd"
+  | "custom";
 
 export type ReportPoint = {
   date: string;
