@@ -103,11 +103,6 @@
       aria-label="後台導覽"
     >
       <div class="dashboard-sidebar__top">
-        <div>
-          <p class="dashboard-sidebar__eyebrow">Navigation</p>
-          <p class="dashboard-sidebar__label">管理後台</p>
-        </div>
-
         <button
           class="dashboard-sidebar__close"
           type="button"
@@ -222,6 +217,7 @@
           icon: "M7 7.5h10M7 12h10m-10 4.5h6M6 4.5h12a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18V6A1.5 1.5 0 0 1 6 4.5Z",
         },
         {
+          to: "/productAnalysis",
           label: "商品分析",
           description: "品類熱度與銷售動能",
           icon: "m7 8 5-3 5 3v8l-5 3-5-3Z M12 5v11",
@@ -235,16 +231,6 @@
           label: "會員分析",
           description: "留存與回購即將開放",
           icon: "M8 11a4 4 0 1 1 8 0a4 4 0 1 1-8 0m-2.5 8.5a6.5 6.5 0 0 1 13 0",
-        },
-      ],
-    },
-    {
-      title: "系統管理",
-      items: [
-        {
-          label: "系統設定",
-          description: "權限與環境設定",
-          icon: "M12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7Zm0-4v2.2m0 10.6v2.2M19.5 12h-2.2M6.7 12H4.5m10.63-5.13 1.55-1.55M7.32 16.68 5.77 18.23m0-12.46 1.55 1.55m8.36 8.36 1.55 1.55",
         },
       ],
     },
@@ -388,7 +374,6 @@
     min-width: 0;
   }
 
-  .dashboard-sidebar__eyebrow,
   .dashboard-sidebar__section-title {
     color: var(--color-accent);
     font-size: var(--text-xs);
@@ -578,25 +563,14 @@
 
   .dashboard-sidebar__top {
     display: flex;
-    align-items: start;
-    justify-content: space-between;
-    gap: var(--space-3);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid rgba(196, 201, 186, 0.58);
-  }
-
-  .dashboard-sidebar__label {
-    margin-top: var(--space-1);
-    font-family: "Manrope", "Noto Sans TC", sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
+    justify-content: flex-end;
   }
 
   .dashboard-sidebar__nav {
     display: grid;
     align-content: start;
     gap: var(--space-4);
-    padding-top: var(--space-4);
+    padding-top: 0;
   }
 
   .dashboard-sidebar__group {

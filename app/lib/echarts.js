@@ -1,5 +1,5 @@
 import { use } from "echarts/core";
-import { BarChart, LineChart } from "echarts/charts";
+import { BarChart, LineChart, PieChart } from "echarts/charts";
 import {
   GridComponent,
   LegendComponent,
@@ -12,6 +12,7 @@ import VChart from "vue-echarts";
 use([
   BarChart,
   LineChart,
+  PieChart,
   GridComponent,
   LegendComponent,
   MarkLineComponent,

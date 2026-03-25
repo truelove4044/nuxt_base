@@ -6,6 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev --open",
     "generate": "nuxt generate",
+    "generate:product-analysis-data": "node scripts/generate-product-analysis-data.mjs",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
