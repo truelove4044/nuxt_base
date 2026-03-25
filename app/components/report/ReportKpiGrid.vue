@@ -62,11 +62,16 @@ function formatAnimatedValue(item, value) {
     return item.formattedValue || "--";
   }
 
+  if (item.unit === "decimal") {
+    return Number(value).toFixed(2);
+  }
+
   if (item.unit === "percent" || item.key === "achievementRate") {
     return `${value.toFixed(1)}%`;
   }
 
   if (
+    item.unit === "currency" ||
     item.unit === "TWD" ||
     item.key === "revenue" ||
     item.key === "forecast" ||

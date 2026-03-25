@@ -1,4 +1,4 @@
-import { use } from "echarts/core";
+﻿import { use } from "echarts/core";
 import { BarChart, LineChart, PieChart } from "echarts/charts";
 import {
   GridComponent,

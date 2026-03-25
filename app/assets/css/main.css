@@ -118,6 +118,12 @@ h6 {
   letter-spacing: -0.02em;
 }
 
+.report-page__title {
+  max-width: 16ch;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  line-height: 1.6;
+}
+
 p {
   margin: 0;
 }

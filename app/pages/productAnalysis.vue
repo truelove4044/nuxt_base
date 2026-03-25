@@ -1,14 +1,10 @@
 <template>
   <main id="main-content" class="product-analysis-page">
     <section class="product-analysis-page__hero">
-      <h1 class="product-analysis-page__title">{{ pageTitle }}</h1>
+      <h1 class="report-page__title">{{ pageTitle }}</h1>
     </section>
 
     <BaseCard v-if="groupOptions.length" class="analysis-switcher">
-      <header class="analysis-switcher__header">
-        <ReportSectionTitle eyebrow="分析維度" title="快速切換商品分類" />
-      </header>
-
       <div class="analysis-switcher__group">
         <div class="analysis-switcher__top-row">
           <div class="analysis-switcher__cluster">
@@ -105,55 +101,34 @@
     </div>
 
     <section class="product-analysis-page__grid">
-      <BaseCard class="product-card product-card--pie">
-        <header class="product-card__header">
-          <ReportSectionTitle
-            eyebrow="占比結構"
-            :title="summary?.pieChart?.title || '商品占比'"
-          />
-          <p class="product-card__meta">
-            {{ summary?.pieChart?.monthLabel || "尚未提供月份資料" }}
-          </p>
-        </header>
+      <div class="product-card-shell product-card-shell--pie">
+        <BaseCard v-if="loading" class="product-card__loading-card">
+          <header class="product-card__header">
+            <ReportSectionTitle
+              eyebrow="占比結構"
+              :title="summary?.pieChart?.title || '商品占比'"
+            />
+            <p class="product-card__meta">
+              {{ summary?.pieChart?.monthLabel || "尚未提供月份資料" }}
+            </p>
+          </header>
 
-        <div v-if="loading" class="product-card__loading" aria-live="polite">
-          正在整理占比資料...
-        </div>
+          <div class="product-card__loading" aria-live="polite">
+            正在整理占比資料...
+          </div>
+        </BaseCard>
 
-        <div v-else-if="pieItems.length" class="pie-panel">
-          <VChart class="pie-panel__chart" :option="pieOption" autoresize />
-
-          <ul class="pie-panel__legend" aria-label="商品占比清單">
-            <li
-              v-for="item in pieItems"
-              :key="item.key"
-              class="pie-panel__legend-item"
-            >
-              <span
-                class="pie-panel__swatch"
-                :style="{ backgroundColor: item.color }"
-                aria-hidden="true"
-              />
-              <div class="pie-panel__legend-copy">
-                <p class="pie-panel__brand">{{ item.label }}</p>
-                <p class="pie-panel__units">
-                  {{ formatUnits(item.units, true) }} ・{{
-                    formatShare(item.share)
-                  }}
-                </p>
-              </div>
-              <p class="pie-panel__share">{{ formatShare(item.share) }}</p>
-            </li>
-          </ul>
-        </div>
-
-        <div v-else class="product-card__empty-inline">
-          <p class="product-card__empty-title">目前沒有占比資料</p>
-          <p class="product-card__empty-description">
-            資料回補後會顯示此分類的結構占比。
-          </p>
-        </div>
-      </BaseCard>
+        <PieBreakdownCard
+          v-else
+          eyebrow="占比結構"
+          :title="summary?.pieChart?.title || '商品占比'"
+          :meta="summary?.pieChart?.monthLabel || '尚未提供月份資料'"
+          :items="pieBreakdownItems"
+          empty-title="目前沒有占比資料"
+          empty-description="資料回補後會顯示此分類的結構占比。"
+          :tooltip-value-formatter="formatPieTooltipValue"
+        />
+      </div>
 
       <BaseCard class="product-card product-card--matrix">
         <header class="product-card__header">
@@ -263,7 +238,7 @@
 
 <script setup>
   import { computed, onMounted, ref, watch } from "vue";
-  import { VChart } from "~/lib/echarts";
+  import PieBreakdownCard from "~/components/report/PieBreakdownCard.vue";
 
   definePageMeta({
     layout: "dashboard",
@@ -305,6 +280,16 @@
       )?.label || "",
   );
   const pieItems = computed(() => summary.value?.pieChart?.items || []);
+  const pieBreakdownItems = computed(() =>
+    pieItems.value.map((item) => ({
+      key: item.key,
+      label: item.label,
+      value: item.units,
+      share: item.share,
+      color: item.color,
+      secondaryText: `${formatUnits(item.units, true)} ・${formatShare(item.share)}`,
+    })),
+  );
   const matrixYear = computed(() => details.value?.matrixHeader?.year || null);
   const matrixMonths = computed(
     () => details.value?.matrixHeader?.months || [],
@@ -357,133 +342,6 @@
     }),
   );
 
-  const pieOption = computed(() => ({
-    color: pieItems.value.map((item) => item.color),
-    tooltip: {
-      trigger: "item",
-      backgroundColor: "rgba(32, 32, 28, 0.92)",
-      borderWidth: 0,
-      textStyle: {
-        color: "#ffffff",
-      },
-      formatter(params) {
-        return `${params.name}<br/>${formatUnits(params.value, true)} (${Number(
-          params.percent,
-        ).toFixed(1)}%)`;
-      },
-    },
-    legend: {
-      show: false,
-    },
-    media: [
-      {
-        query: {
-          maxWidth: 767,
-        },
-        option: {
-          series: [
-            {
-              radius: ["42%", "70%"],
-              label: {
-                fontSize: 11,
-              },
-              labelLine: {
-                length: 11,
-                length2: 16,
-              },
-            },
-          ],
-        },
-      },
-      {
-        query: {
-          minWidth: 768,
-        },
-        option: {
-          series: [
-            {
-              radius: ["45%", "74%"],
-              label: {
-                fontSize: 12,
-              },
-              labelLine: {
-                length: 15,
-                length2: 24,
-              },
-            },
-          ],
-        },
-      },
-      {
-        query: {
-          minWidth: 1180,
-        },
-        option: {
-          series: [
-            {
-              radius: ["46%", "76%"],
-              label: {
-                fontSize: 13,
-              },
-              labelLine: {
-                length: 18,
-                length2: 32,
-              },
-            },
-          ],
-        },
-      },
-    ],
-    series: [
-      {
-        name: summary.value?.pieChart?.title || "商品占比",
-        type: "pie",
-        radius: ["45%", "74%"],
-        center: ["50%", "50%"],
-        minAngle: 4,
-        minShowLabelAngle: 3,
-        avoidLabelOverlap: true,
-        labelLayout: {
-          hideOverlap: true,
-          moveOverlap: "shiftY",
-        },
-        itemStyle: {
-          borderColor: "#fffefb",
-          borderWidth: 2,
-        },
-        label: {
-          show: true,
-          position: "outside",
-          formatter: "{b} {d}%",
-          color: "#595757",
-          lineHeight: 18,
-          fontFamily: "Manrope, Noto Sans TC, sans-serif",
-          fontWeight: 600,
-        },
-        labelLine: {
-          show: true,
-          smooth: false,
-          length: 15,
-          length2: 24,
-          lineStyle: {
-            width: 1.2,
-          },
-        },
-        emphasis: {
-          scale: true,
-          scaleSize: 8,
-        },
-        data: pieItems.value.map((item) => ({
-          name: item.label,
-          value: item.units,
-          itemStyle: {
-            color: item.color,
-          },
-        })),
-      },
-    ],
-  }));
-
   useHead(() => ({
     title: pageTitle.value,
     meta: [
@@ -517,6 +375,10 @@
     }
 
     return `${Number(value).toFixed(1)}%`;
+  }
+
+  function formatPieTooltipValue(params) {
+    return formatUnits(params.value, true);
   }
 
   function getHeatCellStyle(value) {
@@ -723,11 +585,6 @@
     text-transform: uppercase;
   }
 
-  .product-analysis-page__title {
-    font-size: clamp(1.8rem, 4.2vw, 2.4rem);
-    line-height: 1.2;
-  }
-
   .product-analysis-page__meta {
     color: var(--color-text-muted);
     font-size: var(--text-base);
@@ -839,6 +696,12 @@
     gap: var(--space-5);
   }
 
+  .product-card-shell {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+  }
+
   .product-card {
     display: grid;
     gap: var(--space-5);
@@ -860,7 +723,7 @@
 
   .product-card__meta {
     color: var(--color-text-muted);
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
     font-weight: 600;
   }
 
@@ -878,86 +741,10 @@
     min-height: 300px;
   }
 
-  .product-card__empty-inline {
-    display: grid;
-    gap: var(--space-2);
-    align-content: center;
-    justify-items: center;
-    min-height: 220px;
-    border: 1px dashed rgba(118, 113, 111, 0.24);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.72);
-    text-align: center;
-    padding: var(--space-6);
-  }
-
-  .product-card__empty-title {
-    font-size: var(--text-lg);
-    font-weight: 700;
-  }
-
-  .product-card__empty-description {
-    color: var(--color-text-muted);
-    max-width: 32ch;
-  }
-
-  .pie-panel {
+  .product-card__loading-card {
     display: grid;
     gap: var(--space-5);
-  }
-
-  .pie-panel__chart {
-    height: min(74vw, 440px);
-    min-height: 320px;
-  }
-
-  .pie-panel__legend {
-    display: grid;
-    gap: var(--space-3);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .pie-panel__legend-item {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3);
-    border: 1px solid rgba(196, 201, 186, 0.48);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.72);
-  }
-
-  .pie-panel__swatch {
-    display: inline-flex;
-    width: 12px;
-    height: 12px;
-    border-radius: 999px;
-  }
-
-  .pie-panel__legend-copy {
-    display: grid;
-    gap: 2px;
-    min-width: 0;
-  }
-
-  .pie-panel__brand {
-    font-size: var(--text-base);
-    font-weight: 700;
-  }
-
-  .pie-panel__units {
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-  }
-
-  .pie-panel__share {
-    font-family: "Manrope", "Noto Sans TC", sans-serif;
-    font-size: var(--text-lg);
-    font-weight: 700;
-    color: var(--color-primary-700);
+    padding: var(--space-5);
   }
 
   .matrix-scroll {
@@ -1193,8 +980,8 @@
       --matrix-table-min-width: 1248px;
     }
 
-    .pie-panel__chart {
-      height: 400px;
+    .product-card__loading-card {
+      padding: var(--space-6);
     }
   }
 

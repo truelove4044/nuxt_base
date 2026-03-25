@@ -212,20 +212,21 @@
           icon: "M5 19V9.5m7 9.5V5m7 14v-7",
         },
         {
-          label: "訂單分析",
-          description: "訂單結構與轉換率",
-          icon: "M7 7.5h10M7 12h10m-10 4.5h6M6 4.5h12a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18V6A1.5 1.5 0 0 1 6 4.5Z",
-        },
-        {
           to: "/productAnalysis",
           label: "商品分析",
           description: "品類熱度與銷售動能",
           icon: "m7 8 5-3 5 3v8l-5 3-5-3Z M12 5v11",
         },
         {
+          to: "/advertisingEffectiveness",
           label: "廣告成效",
-          description: "投放表現即將開放",
+          description: "投放漏斗與佔比分析",
           icon: "M5.5 16.5 18.5 7.5M14 7.5h4.5V12M7 16.5H4.5V12",
+        },
+        {
+          label: "訂單分析",
+          description: "訂單結構與轉換率",
+          icon: "M7 7.5h10M7 12h10m-10 4.5h6M6 4.5h12a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18V6A1.5 1.5 0 0 1 6 4.5Z",
         },
         {
           label: "會員分析",

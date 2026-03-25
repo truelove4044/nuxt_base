@@ -142,12 +142,6 @@
     text-transform: uppercase;
   }
 
-  .report-page__title {
-    max-width: 16ch;
-    font-size: clamp(1.8rem, 5vw, 2.6rem);
-    line-height: 1.6;
-  }
-
   .report-page__feedback {
     display: grid;
   }
