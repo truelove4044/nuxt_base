@@ -1091,23 +1091,23 @@
   .matrix-scroll {
     --app-scrollbar-size: 7px;
     --app-scrollbar-track-color: rgba(118, 113, 111, 0.08);
-    --app-scrollbar-thumb-color: rgba(var(--color-primary-600-rgb), 0.34);
-    --app-scrollbar-thumb-hover-color: rgba(var(--color-primary-600-rgb), 0.44);
+    --app-scrollbar-thumb-color: rgba(118, 113, 111, 0.3);
+    --app-scrollbar-thumb-hover-color: rgba(89, 87, 87, 0.4);
     --app-scrollbar-thumb-border: rgba(255, 255, 255, 0.84);
     --app-scrollbar-track-bg: linear-gradient(
       180deg,
       rgba(118, 113, 111, 0.03) 0%,
-      rgba(118, 113, 111, 0.07) 100%
+      rgba(118, 113, 111, 0.06) 100%
     );
     --app-scrollbar-thumb-bg: linear-gradient(
       180deg,
-      rgba(var(--color-primary-600-rgb), 0.34) 0%,
-      rgba(86, 148, 47, 0.4) 100%
+      rgba(118, 113, 111, 0.28) 0%,
+      rgba(89, 87, 87, 0.36) 100%
     );
     --app-scrollbar-thumb-hover-bg: linear-gradient(
       180deg,
-      rgba(var(--color-primary-600-rgb), 0.44) 0%,
-      rgba(86, 148, 47, 0.5) 100%
+      rgba(118, 113, 111, 0.38) 0%,
+      rgba(89, 87, 87, 0.46) 100%
     );
     display: grid;
     gap: var(--space-3);
