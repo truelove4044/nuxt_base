@@ -5,6 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --open",
+    "test": "node --test",
     "generate": "nuxt generate",
     "generate:advertising-effectiveness-data": "node scripts/generate-advertising-effectiveness-data.mjs",
     "generate:report-data": "node scripts/generate-report-data.mjs",

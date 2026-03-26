@@ -7,9 +7,35 @@ const COUNTRY_LABELS = {
 };
 
 const currencyFormatter = new Intl.NumberFormat("zh-TW");
+const BUSINESS_TIMEZONE_OFFSET_HOURS = 8;
+
+function createMonthStart(year, monthIndex) {
+  const normalizedMonth = String(monthIndex + 1).padStart(2, "0");
+  return new Date(`${year}-${normalizedMonth}-01T00:00:00+08:00`);
+}
+
+function getBusinessYearMonth(date) {
+  const businessTimestamp =
+    date.getTime() + BUSINESS_TIMEZONE_OFFSET_HOURS * 60 * 60 * 1000;
+  const businessDate = new Date(businessTimestamp);
+
+  return {
+    year: businessDate.getUTCFullYear(),
+    monthIndex: businessDate.getUTCMonth(),
+  };
+}
+
+function shiftMonth(year, monthIndex, delta) {
+  const shiftedDate = new Date(Date.UTC(year, monthIndex + delta, 1));
+  return createMonthStart(
+    shiftedDate.getUTCFullYear(),
+    shiftedDate.getUTCMonth(),
+  );
+}
 
 function parseMonth(month) {
-  return new Date(`${month}-01T00:00:00+08:00`);
+  const [year, rawMonth] = month.split("-");
+  return createMonthStart(Number(year), Number(rawMonth) - 1);
 }
 
 function formatMonthLabel(month) {
@@ -48,8 +74,8 @@ function getLatestMonthDate(data) {
 }
 
 function getCurrentMonthDate() {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1);
+  const { year, monthIndex } = getBusinessYearMonth(new Date());
+  return createMonthStart(year, monthIndex);
 }
 
 function getEffectiveLatestMonthDate(data) {
@@ -64,71 +90,60 @@ function getEffectiveLatestMonthDate(data) {
 function getPresetRange(rangePreset, data) {
   const latestMonthDate = getLatestMonthDate(data);
   const effectiveLatestMonthDate = getEffectiveLatestMonthDate(data);
-  const latestYear = latestMonthDate.getFullYear();
-  const effectiveYear = effectiveLatestMonthDate.getFullYear();
+  const { year: latestYear } = getBusinessYearMonth(latestMonthDate);
+  const { year: effectiveYear, monthIndex: effectiveMonthIndex } =
+    getBusinessYearMonth(effectiveLatestMonthDate);
 
   if (rangePreset === "last3m") {
     return {
-      start: new Date(
-        effectiveLatestMonthDate.getFullYear(),
-        effectiveLatestMonthDate.getMonth() - 2,
-        1,
-      ),
+      start: shiftMonth(effectiveYear, effectiveMonthIndex, -2),
       end: effectiveLatestMonthDate,
     };
   }
 
   if (rangePreset === "last6m") {
     return {
-      start: new Date(
-        effectiveLatestMonthDate.getFullYear(),
-        effectiveLatestMonthDate.getMonth() - 5,
-        1,
-      ),
+      start: shiftMonth(effectiveYear, effectiveMonthIndex, -5),
       end: effectiveLatestMonthDate,
     };
   }
 
   if (rangePreset === "q1") {
     return {
-      start: new Date(latestYear, 0, 1),
-      end: new Date(latestYear, 2, 1),
+      start: createMonthStart(latestYear, 0),
+      end: createMonthStart(latestYear, 2),
     };
   }
 
   if (rangePreset === "q2") {
     return {
-      start: new Date(latestYear, 3, 1),
-      end: new Date(latestYear, 5, 1),
+      start: createMonthStart(latestYear, 3),
+      end: createMonthStart(latestYear, 5),
     };
   }
 
   if (rangePreset === "q3") {
     return {
-      start: new Date(latestYear, 6, 1),
-      end: new Date(latestYear, 8, 1),
+      start: createMonthStart(latestYear, 6),
+      end: createMonthStart(latestYear, 8),
     };
   }
 
   if (rangePreset === "q4") {
     return {
-      start: new Date(latestYear, 9, 1),
-      end: new Date(latestYear, 11, 1),
+      start: createMonthStart(latestYear, 9),
+      end: createMonthStart(latestYear, 11),
     };
   }
 
   if (rangePreset === "ytd") {
     return {
-      start: new Date(effectiveYear, 0, 1),
+      start: createMonthStart(effectiveYear, 0),
       end: effectiveLatestMonthDate,
     };
   }
 
-  const start = new Date(
-    effectiveLatestMonthDate.getFullYear(),
-    effectiveLatestMonthDate.getMonth() - 11,
-    1,
-  );
+  const start = shiftMonth(effectiveYear, effectiveMonthIndex, -11);
 
   return {
     start,
