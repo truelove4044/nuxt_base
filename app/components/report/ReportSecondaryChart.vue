@@ -64,6 +64,7 @@
   const option = computed(() => {
     const series = props.chartData?.series || [];
     const labels = series[0]?.points?.map((point) => point.label) || [];
+    const shouldShowAllLabels = labels.length > 0 && labels.length <= 3;
 
     return {
       color: ["#ee7d3b", "#69ba3a"],
@@ -127,6 +128,8 @@
         },
         axisLabel: {
           color: "#76716f",
+          interval: shouldShowAllLabels ? 0 : "auto",
+          hideOverlap: !shouldShowAllLabels,
         },
       },
       yAxis: [
