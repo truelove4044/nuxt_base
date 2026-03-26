@@ -1,17 +1,3 @@
-import {
-  REPORT_DATA_END_MONTH,
-  REPORT_DATA_END_YEAR,
-  REPORT_DATA_START_MONTH,
-  REPORT_DATA_START_YEAR,
-} from "../../shared/report-data-config.js";
-
-export {
-  REPORT_DATA_END_MONTH,
-  REPORT_DATA_END_YEAR,
-  REPORT_DATA_START_MONTH,
-  REPORT_DATA_START_YEAR,
-};
-
 const reportSeedConfig = {
   indonesia: {
     baseRevenue: 18600000,

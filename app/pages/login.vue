@@ -30,6 +30,7 @@
           :form-error="formError"
           @blur:account="handleAccountBlur"
           @blur:password="handlePasswordBlur"
+          @credential-copy="handleCredentialCopy"
           @submit="handleSubmit"
         />
 
@@ -44,11 +45,23 @@
         Copyright © Forwardmall. All rights reserved.
       </p>
     </div>
+
+    <Transition name="login-copy-toast">
+      <div
+        v-if="copyToast.visible"
+        class="login-copy-toast"
+        :class="`login-copy-toast--${copyToast.type}`"
+        role="status"
+        aria-live="polite"
+      >
+        {{ copyToast.message }}
+      </div>
+    </Transition>
   </AuthShell>
 </template>
 
 <script setup>
-  import { computed, nextTick, ref, watch } from "vue";
+  import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
   import { useField, useForm } from "vee-validate";
   import * as yup from "yup";
 
@@ -89,6 +102,12 @@
     },
   });
   const formError = ref("");
+  const copyToast = ref({
+    visible: false,
+    type: "success",
+    message: "",
+  });
+  let copyToastTimerId = null;
 
   const { handleSubmit: withValidation, setErrors } = useForm({
     validationSchema,
@@ -211,10 +230,44 @@
     await submitLogin();
   }
 
+  function clearCopyToastTimer() {
+    if (copyToastTimerId !== null) {
+      clearTimeout(copyToastTimerId);
+      copyToastTimerId = null;
+    }
+  }
+
+  function showCopyToast(message, type) {
+    clearCopyToastTimer();
+    copyToast.value = {
+      visible: true,
+      type,
+      message,
+    };
+    copyToastTimerId = setTimeout(() => {
+      copyToast.value.visible = false;
+      copyToastTimerId = null;
+    }, 1800);
+  }
+
+  function handleCredentialCopy(payload) {
+    if (payload?.success) {
+      const label = payload.field === "password" ? "密碼" : "帳號";
+      showCopyToast(`已複製測試${label}`, "success");
+      return;
+    }
+
+    showCopyToast("無法複製到剪貼簿，請手動複製。", "error");
+  }
+
   watch([account, password], () => {
     if (formError.value) {
       formError.value = "";
     }
+  });
+
+  onBeforeUnmount(() => {
+    clearCopyToastTimer();
   });
 </script>
 
@@ -276,6 +329,46 @@
     text-align: center;
   }
 
+  .login-copy-toast {
+    position: fixed;
+    top: var(--space-5);
+    right: var(--space-5);
+    z-index: 1200;
+    max-width: min(92vw, 320px);
+    padding: 10px 14px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: 20px;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.18);
+  }
+
+  .login-copy-toast--success {
+    color: #1d5220;
+    border-color: rgba(90, 164, 69, 0.32);
+    background: rgba(90, 164, 69, 0.16);
+  }
+
+  .login-copy-toast--error {
+    color: #7f2d2d;
+    border-color: rgba(var(--color-danger-rgb), 0.34);
+    background: rgba(var(--color-danger-rgb), 0.12);
+  }
+
+  .login-copy-toast-enter-active,
+  .login-copy-toast-leave-active {
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  .login-copy-toast-enter-from,
+  .login-copy-toast-leave-to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
   @media (min-width: 768px) {
     .login-page__card {
       padding: var(--space-10);
@@ -296,6 +389,11 @@
   @media (max-width: 1023px) {
     .login-page__column {
       flex-direction: column;
+    }
+
+    .login-copy-toast {
+      top: var(--space-4);
+      right: var(--space-4);
     }
   }
 </style>

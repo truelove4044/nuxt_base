@@ -6,8 +6,8 @@ import {
   REPORT_DATA_END_YEAR,
   REPORT_DATA_START_MONTH,
   REPORT_DATA_START_YEAR,
-  getReportSeedConfig,
-} from "../server/utils/report-seed.js";
+} from "../shared/report-data-config.js";
+import { getReportSeedConfig } from "../server/utils/report-seed.js";
 
 const REVENUE_CURVE = [
   0.9, 1.02, 1.08, 0.95, 1.04, 1.1, 1.0, 1.07, 1.15, 1.24, 1.31, 1.28,

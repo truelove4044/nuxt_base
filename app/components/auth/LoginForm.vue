@@ -69,13 +69,34 @@
     <p class="login-form__footer">
       登入即代表您同意遵循內部資料安全與操作規範。
     </p>
+
+    <div class="login-form__credentials">
+      <span class="login-form__credentials-label">測試用帳密:</span>
+      <button
+        class="login-form__credential"
+        type="button"
+        :disabled="pending"
+        @click="copyCredential('account')"
+      >
+        admin@example.com
+      </button>
+      <span class="login-form__credential-separator">/</span>
+      <button
+        class="login-form__credential"
+        type="button"
+        :disabled="pending"
+        @click="copyCredential('password')"
+      >
+        Admin123!
+      </button>
+    </div>
   </form>
 </template>
 
 <script setup>
 import { ref } from "vue";
 
-defineProps({
+const props = defineProps({
   pending: {
     type: Boolean,
     default: false,
@@ -107,11 +128,35 @@ const emit = defineEmits([
   "update:password",
   "blur:account",
   "blur:password",
+  "credential-copy",
   "submit",
 ]);
 const showPassword = ref(false);
 const accountInput = ref(null);
 const passwordInput = ref(null);
+const DEMO_CREDENTIALS = {
+  account: "admin@example.com",
+  password: "Admin123!",
+};
+
+async function copyCredential(field) {
+  if (props.pending) {
+    return;
+  }
+
+  const value = DEMO_CREDENTIALS[field];
+  if (!value || !import.meta.client || !navigator?.clipboard?.writeText) {
+    emit("credential-copy", { success: false, field });
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(value);
+    emit("credential-copy", { success: true, field });
+  } catch {
+    emit("credential-copy", { success: false, field });
+  }
+}
 
 function focusField(field) {
   if (field === "password") {
@@ -204,5 +249,51 @@ defineExpose({
   color: var(--color-text-muted);
   font-size: var(--text-sm);
   line-height: 20px;
+}
+
+.login-form__credentials {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: 20px;
+}
+
+.login-form__credentials-label {
+  margin-right: 2px;
+}
+
+.login-form__credential {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary-600);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--color-primary-600-rgb), 0.45);
+  text-underline-offset: 3px;
+}
+
+.login-form__credential:hover {
+  color: var(--color-primary-700);
+}
+
+.login-form__credential:focus-visible {
+  outline: 0;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-600-rgb), 0.24);
+}
+
+.login-form__credential:disabled {
+  color: var(--color-text-soft);
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+.login-form__credential-separator {
+  color: var(--color-text-soft);
 }
 </style>
