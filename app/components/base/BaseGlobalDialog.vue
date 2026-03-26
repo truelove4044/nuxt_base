@@ -50,14 +50,19 @@
             >
               {{ dialog.error.value }}
             </p>
-            <div v-else-if="dialog.articles.value.length" class="global-dialog__content">
+            <div
+              v-else-if="dialog.articles.value.length"
+              class="global-dialog__content"
+            >
               <article
                 v-for="(article, index) in dialog.articles.value"
                 :key="`${article.numberLabel}-${index}`"
                 class="global-dialog__article"
               >
                 <h3 class="global-dialog__article-heading">
-                  <span class="global-dialog__article-number">{{ article.numberLabel }}</span>
+                  <span class="global-dialog__article-number">
+                    {{ article.numberLabel }}
+                  </span>
                   <span>{{ article.heading }}</span>
                 </h3>
                 <p
@@ -80,7 +85,9 @@
                 </ul>
               </article>
             </div>
-            <p v-else class="global-dialog__state">目前沒有可顯示的條款內容。</p>
+            <p v-else class="global-dialog__state">
+              目前沒有可顯示的條款內容。
+            </p>
           </div>
         </section>
       </div>
@@ -122,7 +129,9 @@
 
   async function handleDialogOpen() {
     activeElementBeforeOpen.value =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     bodyOverflowBackup = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     await nextTick();
@@ -298,9 +307,33 @@
     transition: opacity 0.2s ease;
   }
 
+  .global-dialog-fade-enter-active .global-dialog__panel {
+    transition:
+      opacity 0.24s ease-out,
+      transform 0.24s ease-out;
+  }
+
+  .global-dialog-fade-leave-active .global-dialog__panel {
+    transition:
+      opacity 0.18s ease-in,
+      transform 0.18s ease-in;
+  }
+
   .global-dialog-fade-enter-from,
   .global-dialog-fade-leave-to {
     opacity: 0;
+  }
+
+  .global-dialog-fade-enter-from .global-dialog__panel,
+  .global-dialog-fade-leave-to .global-dialog__panel {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+
+  .global-dialog-fade-enter-to .global-dialog__panel,
+  .global-dialog-fade-leave-from .global-dialog__panel {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   @media (max-width: 767px) {
