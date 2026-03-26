@@ -2,6 +2,7 @@
   <div class="app-layout">
     <a class="app-layout__skip" href="#main-content">跳到主要內容</a>
     <slot />
+    <BaseGlobalDialog />
   </div>
 </template>
 

@@ -190,6 +190,8 @@
     <div class="dashboard-layout__content">
       <slot />
     </div>
+
+    <BaseGlobalDialog />
   </div>
 </template>
 

@@ -23,11 +23,20 @@
       <h1 class="auth-brand-panel__title">{{ title }}</h1>
       <h2 class="auth-brand-panel__subtitle">{{ subtitle }}</h2>
       <p class="auth-brand-panel__description">{{ description }}</p>
+      <button
+        class="auth-brand-panel__policy-trigger"
+        type="button"
+        @click="emit('open-policy')"
+      >
+        查看保密與隱私條款
+      </button>
     </div>
   </section>
 </template>
 
 <script setup>
+  const emit = defineEmits(["open-policy"]);
+
   defineProps({
     eyebrow: {
       type: String,
@@ -176,6 +185,32 @@
     color: rgba(255, 255, 255, 0.72);
     font-size: var(--text-base);
     line-height: 24px;
+  }
+
+  .auth-brand-panel__policy-trigger {
+    justify-self: start;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #c5f0a9;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    line-height: 20px;
+    text-decoration: underline;
+    text-decoration-color: rgba(197, 240, 169, 0.64);
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .auth-brand-panel__policy-trigger:hover {
+    color: #e8ffd9;
+  }
+
+  .auth-brand-panel__policy-trigger:focus-visible {
+    outline: 0;
+    border-radius: 4px;
+    box-shadow: 0 0 0 4px rgba(166, 227, 123, 0.3);
   }
 
   .auth-brand-panel__list {

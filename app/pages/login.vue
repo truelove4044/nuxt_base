@@ -6,6 +6,7 @@
         title="馥華營運管理系統"
         subtitle="系統資料屬馥華全球電商機密文件"
         description="未經授權，禁止複製、轉錄或攝影等其他洩密行為。"
+        @open-policy="handleOpenPolicyDialog"
       />
     </template>
 
@@ -61,7 +62,13 @@
 </template>
 
 <script setup>
-  import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
+  import {
+    computed,
+    nextTick,
+    onBeforeUnmount,
+    ref,
+    watch,
+  } from "vue";
   import { useField, useForm } from "vee-validate";
   import * as yup from "yup";
 
@@ -80,6 +87,8 @@
   });
 
   const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const dialog = useGlobalDialog();
+  const isPolicyLoaded = ref(false);
 
   const validationSchema = yup.object({
     account: yup
@@ -260,6 +269,48 @@
     showCopyToast("無法複製到剪貼簿，請手動複製。", "error");
   }
 
+  async function ensurePolicyLoaded() {
+    if (isPolicyLoaded.value) {
+      return true;
+    }
+
+    try {
+      const result = await $fetch("/api/policy/internal-confidentiality");
+      const articles = Array.isArray(result?.articles) ? result.articles : [];
+
+      if (!articles.length) {
+        throw new Error("policy data is empty");
+      }
+
+      dialog.setTitle(result?.title || "公司內部系統保密與隱私條款");
+      dialog.setArticles(articles);
+      dialog.setContent("");
+      dialog.setError("");
+      isPolicyLoaded.value = true;
+      return true;
+    } catch (error) {
+      const message =
+        error?.data?.message || "目前無法載入保密與隱私條款，請稍後再試。";
+      dialog.setError(message);
+      return false;
+    } finally {
+      dialog.setLoading(false);
+    }
+  }
+
+  async function handleOpenPolicyDialog() {
+    dialog.setLoading(true);
+    const isLoaded = await ensurePolicyLoaded();
+
+    dialog.openDialog({
+      title: dialog.title.value || "公司內部系統保密與隱私條款",
+      content: "",
+      articles: isLoaded ? dialog.articles.value : [],
+      error: isLoaded ? "" : dialog.error.value,
+      isLoading: false,
+    });
+  }
+
   watch([account, password], () => {
     if (formError.value) {
       formError.value = "";
@@ -269,6 +320,8 @@
   onBeforeUnmount(() => {
     clearCopyToastTimer();
   });
+
+  dialog.closeDialog();
 </script>
 
 <style scoped>
