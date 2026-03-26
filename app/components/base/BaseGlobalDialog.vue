@@ -175,7 +175,7 @@
     justify-content: center;
     padding: var(--space-4);
     background: rgba(46, 55, 42, 0.52);
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(20px);
   }
 
   .global-dialog__panel {
