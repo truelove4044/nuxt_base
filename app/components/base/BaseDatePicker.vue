@@ -17,6 +17,8 @@
         :time-config="timeConfig"
         :min-date="parsedMinDate"
         :max-date="parsedMaxDate"
+        :year-range="yearRange"
+        :prevent-min-max-navigation="true"
         :teleport="true"
         :action-row="actionRow"
         :auto-apply="true"
@@ -40,6 +42,8 @@
   import { computed } from "vue";
   import { zhTW } from "date-fns/locale/zh-TW";
   import { VueDatePicker } from "@vuepic/vue-datepicker";
+
+  const DEFAULT_MIN_YEAR = 2020;
 
   const formats = {
     input: "yyyy/MM/dd",
@@ -101,6 +105,10 @@
 
   const parsedMinDate = computed(() => parseDateString(props.minDate));
   const parsedMaxDate = computed(() => parseDateString(props.maxDate));
+  const yearRange = computed(() => [
+    parsedMinDate.value?.getFullYear() ?? DEFAULT_MIN_YEAR,
+    parsedMaxDate.value?.getFullYear() ?? new Date().getFullYear(),
+  ]);
 </script>
 
 <style scoped>

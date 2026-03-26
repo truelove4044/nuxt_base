@@ -40,13 +40,15 @@
       <BaseDatePicker
         label="開始日期"
         :model-value="startDate"
-        :max-date="endDate"
+        :min-date="minSelectableDate"
+        :max-date="startPickerMaxDate"
         @update:model-value="$emit('update:startDate', $event)"
       />
       <BaseDatePicker
         label="結束日期"
         :model-value="endDate"
-        :min-date="startDate"
+        :min-date="endPickerMinDate"
+        :max-date="endPickerMaxDate"
         @update:model-value="$emit('update:endDate', $event)"
       />
       <p
@@ -62,6 +64,8 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
+
 const countryOptions = [
   { value: "all", label: "總覽" },
   { value: "indonesia", label: "印尼" },
@@ -87,7 +91,7 @@ defineEmits([
   "update:endDate",
 ]);
 
-defineProps({
+const props = defineProps({
   country: {
     type: String,
     required: true,
@@ -108,7 +112,45 @@ defineProps({
     type: String,
     default: "",
   },
+  minSelectableDate: {
+    type: String,
+    default: "",
+  },
+  maxSelectableDate: {
+    type: String,
+    default: "",
+  },
 });
+
+const startPickerMaxDate = computed(() => {
+  if (!props.maxSelectableDate) {
+    return props.endDate;
+  }
+
+  if (!props.endDate) {
+    return props.maxSelectableDate;
+  }
+
+  return props.endDate <= props.maxSelectableDate
+    ? props.endDate
+    : props.maxSelectableDate;
+});
+
+const endPickerMinDate = computed(() => {
+  if (!props.minSelectableDate) {
+    return props.startDate;
+  }
+
+  if (!props.startDate) {
+    return props.minSelectableDate;
+  }
+
+  return props.startDate >= props.minSelectableDate
+    ? props.startDate
+    : props.minSelectableDate;
+});
+
+const endPickerMaxDate = computed(() => props.maxSelectableDate || "");
 </script>
 
 <style scoped>

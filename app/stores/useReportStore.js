@@ -13,6 +13,19 @@ function formatDateInput(date) {
   return `${year}-${month}-${day}`;
 }
 
+function getTodayDateInput() {
+  return formatDateInput(new Date());
+}
+
+function clampToToday(value) {
+  if (!value) {
+    return value;
+  }
+
+  const today = getTodayDateInput();
+  return value <= today ? value : today;
+}
+
 function getQuarterRange(year, quarter) {
   const quarterStartMonthMap = {
     q1: 0,
@@ -91,15 +104,19 @@ export const useReportStore = defineStore("report", () => {
 
     if (nextPreset !== "custom") {
       syncPresetDates(nextPreset);
+      return;
     }
+
+    startDate.value = clampToToday(startDate.value);
+    endDate.value = clampToToday(endDate.value);
   }
 
   function setStartDate(value) {
-    startDate.value = value;
+    startDate.value = clampToToday(value);
   }
 
   function setEndDate(value) {
-    endDate.value = value;
+    endDate.value = clampToToday(value);
   }
 
   function setError(message) {

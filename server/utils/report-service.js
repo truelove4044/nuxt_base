@@ -47,29 +47,45 @@ function getLatestMonthDate(data) {
   return parseMonth(data[data.length - 1].month);
 }
 
+function getCurrentMonthDate() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), 1);
+}
+
+function getEffectiveLatestMonthDate(data) {
+  const latestMonthDate = getLatestMonthDate(data);
+  const currentMonthDate = getCurrentMonthDate();
+
+  return latestMonthDate <= currentMonthDate
+    ? latestMonthDate
+    : currentMonthDate;
+}
+
 function getPresetRange(rangePreset, data) {
   const latestMonthDate = getLatestMonthDate(data);
+  const effectiveLatestMonthDate = getEffectiveLatestMonthDate(data);
   const latestYear = latestMonthDate.getFullYear();
+  const effectiveYear = effectiveLatestMonthDate.getFullYear();
 
   if (rangePreset === "last3m") {
     return {
       start: new Date(
-        latestMonthDate.getFullYear(),
-        latestMonthDate.getMonth() - 2,
+        effectiveLatestMonthDate.getFullYear(),
+        effectiveLatestMonthDate.getMonth() - 2,
         1,
       ),
-      end: latestMonthDate,
+      end: effectiveLatestMonthDate,
     };
   }
 
   if (rangePreset === "last6m") {
     return {
       start: new Date(
-        latestMonthDate.getFullYear(),
-        latestMonthDate.getMonth() - 5,
+        effectiveLatestMonthDate.getFullYear(),
+        effectiveLatestMonthDate.getMonth() - 5,
         1,
       ),
-      end: latestMonthDate,
+      end: effectiveLatestMonthDate,
     };
   }
 
@@ -103,20 +119,20 @@ function getPresetRange(rangePreset, data) {
 
   if (rangePreset === "ytd") {
     return {
-      start: new Date(latestYear, 0, 1),
-      end: latestMonthDate,
+      start: new Date(effectiveYear, 0, 1),
+      end: effectiveLatestMonthDate,
     };
   }
 
   const start = new Date(
-    latestMonthDate.getFullYear(),
-    latestMonthDate.getMonth() - 11,
+    effectiveLatestMonthDate.getFullYear(),
+    effectiveLatestMonthDate.getMonth() - 11,
     1,
   );
 
   return {
     start,
-    end: latestMonthDate,
+    end: effectiveLatestMonthDate,
   };
 }
 

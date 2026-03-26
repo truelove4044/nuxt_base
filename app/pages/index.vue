@@ -11,6 +11,8 @@
       :range-preset="reportStore.rangePreset"
       :start-date="reportStore.startDate"
       :end-date="reportStore.endDate"
+      min-selectable-date="2020-01-01"
+      :max-selectable-date="todayDate"
       :date-error="dateError"
       @update:country="reportStore.setCountry"
       @update:range-preset="reportStore.setRangePreset"
@@ -104,6 +106,14 @@
 
   const reportStore = useReportStore();
   const { summary, details } = useReportDashboard();
+  const todayDate = computed(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  });
 
   const dateError = computed(() =>
     reportStore.isCustomRange && reportStore.startDate > reportStore.endDate
