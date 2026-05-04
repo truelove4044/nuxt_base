@@ -30,11 +30,7 @@
 }
 
 html {
-  font-family:
-    "Noto Sans TC",
-    "Microsoft JhengHei",
-    Arial,
-    sans-serif;
+  font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
   color: var(--color-text);
   background: #f7f8f4;
 }
@@ -64,6 +60,10 @@ button {
   border: 0;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .auth-shell {
   display: grid;
   min-height: 100dvh;
@@ -78,8 +78,16 @@ button {
   overflow: hidden;
   padding: var(--space-8) var(--space-5) var(--space-6);
   background:
-    radial-gradient(circle at top left, rgba(130, 216, 78, 0.18), transparent 30%),
-    radial-gradient(circle at bottom right, rgba(238, 125, 59, 0.12), transparent 28%),
+    radial-gradient(
+      circle at top left,
+      rgba(130, 216, 78, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(238, 125, 59, 0.12),
+      transparent 28%
+    ),
     linear-gradient(160deg, #33432d 0%, #42543a 48%, #55684d 100%);
   color: rgba(255, 255, 255, 0.92);
 }
@@ -182,14 +190,14 @@ button {
 }
 
 .brand-panel__title {
-  max-width: 12ch;
+  max-width: 14ch;
   color: #fff;
   font-size: clamp(2.4rem, 4.4vw, 3.75rem);
   line-height: 1.08;
 }
 
 .brand-panel__subtitle {
-  max-width: 17ch;
+  max-width: 19ch;
   color: rgba(255, 255, 255, 0.92);
   font-size: clamp(1.25rem, 2.2vw, 1.75rem);
   font-weight: 600;
@@ -206,6 +214,9 @@ button {
 .brand-panel__policy {
   justify-self: start;
   min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: #c5f0a9;
   font-size: 0.875rem;
   font-weight: 700;
@@ -213,6 +224,7 @@ button {
   text-decoration: underline;
   text-decoration-color: rgba(197, 240, 169, 0.64);
   text-underline-offset: 3px;
+  cursor: pointer;
   transition: color 0.2s ease;
 }
 
@@ -405,6 +417,175 @@ button {
   text-align: center;
 }
 
+.policy-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgba(46, 55, 42, 0.52);
+  opacity: 0;
+  backdrop-filter: blur(20px);
+  transition: opacity 0.2s ease;
+}
+
+.policy-dialog.is-open {
+  opacity: 1;
+}
+
+.policy-dialog__panel {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, calc(100vw - 32px));
+  min-height: min(58vh, 520px);
+  max-height: min(82vh, 760px);
+  overflow: auto;
+  border: 1px solid rgba(205, 210, 196, 0.92);
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: 0 30px 80px rgba(24, 28, 22, 0.28);
+  opacity: 0;
+  transform: translateY(60px);
+  transition:
+    opacity 0.24s ease-out,
+    transform 0.24s ease-out;
+}
+
+.policy-dialog__panel::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.policy-dialog__panel::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.policy-dialog__panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.policy-dialog__panel::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
+}
+
+.policy-dialog__panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.policy-dialog__panel {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+
+.policy-dialog.is-open .policy-dialog__panel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.policy-dialog__header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid rgba(221, 222, 218, 0.95);
+  background: rgba(255, 254, 251, 0.96);
+}
+
+.policy-dialog__title {
+  color: var(--color-text);
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+.policy-dialog__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.policy-dialog__close:hover {
+  color: var(--color-text);
+  background: rgba(118, 113, 111, 0.09);
+}
+
+.policy-dialog__close:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 4px rgba(105, 186, 58, 0.22);
+}
+
+.policy-dialog__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.policy-dialog__body {
+  flex: 1;
+  min-height: 220px;
+  padding: var(--space-5);
+}
+
+.policy-dialog__content {
+  padding-bottom: var(--space-6);
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.policy-dialog__article + .policy-dialog__article {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid rgba(221, 222, 218, 0.82);
+}
+
+.policy-dialog__article-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  color: var(--color-text);
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+
+.policy-dialog__article-number {
+  min-width: 4.8em;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.policy-dialog__article p + p {
+  margin-top: var(--space-2);
+}
+
+.policy-dialog__article ul {
+  margin: var(--space-3) 0 0;
+  padding-left: 1.4em;
+}
+
+.policy-dialog__article li + li {
+  margin-top: var(--space-2);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .login-card {
     transition: box-shadow 0.24s ease;
@@ -494,10 +675,38 @@ button {
     width: 260px;
     transform: translateY(-50%);
   }
+
+  .policy-dialog {
+    align-items: flex-end;
+    padding: var(--space-3);
+  }
+
+  .policy-dialog__panel {
+    width: 100%;
+    min-height: min(64vh, 560px);
+    max-height: 86vh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .policy-dialog__header,
+  .policy-dialog__body {
+    padding: var(--space-4);
+  }
+
+  .policy-dialog__title {
+    font-size: 1.125rem;
+  }
 }
 
 @media (max-width: 520px) {
   .brand-panel__image {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .policy-dialog,
+  .policy-dialog__panel {
+    transition: none;
   }
 }

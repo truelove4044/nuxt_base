@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="馥華營運管理系統傳統 HTML 登入頁。">
+  <meta name="description" content="馥華營運管理系統傳統">
   <title>後台登入 | 馥華營運管理系統</title>
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -27,9 +27,9 @@
         <p class="brand-panel__description">
           未經授權，禁止複製、轉錄或攝影等其他洩密行為。
         </p>
-        <a class="brand-panel__policy" href="#">
+        <button class="brand-panel__policy" type="button" data-dialog-open>
           查看保密與隱私條款
-        </a>
+        </button>
       </div>
     </aside>
 
@@ -55,11 +55,7 @@
             <div class="form-field">
               <label class="form-field__label" for="password">密碼</label>
               <input id="password" class="form-field__input" type="password" name="password"
-                autocomplete="current-password" placeholder="Admin123!" minlength="6" required>
-            </div>
-
-            <div class="login-form__actions">
-              <a class="login-form__link" href="#">忘記密碼？</a>
+                autocomplete="current-password" placeholder="Password!" minlength="6" required>
             </div>
 
             <button class="login-form__submit" type="submit">
@@ -83,6 +79,267 @@
       </div>
     </main>
   </section>
+
+  <div class="policy-dialog" data-policy-dialog hidden>
+    <section class="policy-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="policy-dialog-title"
+      aria-describedby="policy-dialog-content" tabindex="-1">
+      <header class="policy-dialog__header">
+        <h2 id="policy-dialog-title" class="policy-dialog__title">
+          公司內部系統保密與隱私條款
+        </h2>
+        <button class="policy-dialog__close" type="button" aria-label="關閉對話框" data-dialog-close>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="1.8" />
+          </svg>
+        </button>
+      </header>
+
+      <div id="policy-dialog-content" class="policy-dialog__body">
+        <div class="policy-dialog__content">
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第一條</span>
+              <span>適用範圍</span>
+            </h3>
+            <p>本條款適用於本公司內部資訊系統、平台、工具與相關服務（以下稱「本系統」）。</p>
+            <p>本系統僅限授權人員使用，使用者於登入或使用本系統時，即視為同意本條款。</p>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第二條</span>
+              <span>保密義務</span>
+            </h3>
+            <p>使用者對於本系統內之所有資料，均負有保密義務，包括但不限於：</p>
+            <p>未經授權，不得以任何形式（包含但不限於截圖、下載、轉傳、口述）對外揭露。</p>
+            <ul>
+              <li>公司營運資料</li>
+              <li>客戶資料</li>
+              <li>商業機密與技術資訊</li>
+              <li>系統資料與內部文件</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第三條</span>
+              <span>資料蒐集範圍</span>
+            </h3>
+            <p>本系統基於營運、管理及資安需求，蒐集以下資料：</p>
+            <ul>
+              <li>身分識別資料：姓名、員工編號、部門、職稱</li>
+              <li>帳號與驗證資料：帳號、密碼（加密）、登入憑證、多重驗證資訊</li>
+              <li>系統操作紀錄：登入/登出時間、IP 位址、裝置資訊、操作行為（Audit Log）</li>
+              <li>業務資料：使用者於系統內輸入、上傳或產生之資料</li>
+              <li>系統安全資料：異常登入、權限變更、存取紀錄</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第四條</span>
+              <span>資料使用目的</span>
+            </h3>
+            <ul>
+              <li>身分驗證與權限控管（RBAC/ABAC）</li>
+              <li>系統功能提供與優化</li>
+              <li>操作稽核與行為追蹤（Audit Trail）</li>
+              <li>資安監控、異常偵測與事件調查</li>
+              <li>內部管理、績效分析與流程改善</li>
+              <li>法令遵循與內外部稽核</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第五條</span>
+              <span>權限控管機制</span>
+            </h3>
+            <p>本系統採取嚴格權限管理制度：</p>
+            <ul>
+              <li>最小權限原則（Least Privilege）</li>
+              <li>角色權限控管（RBAC）</li>
+              <li>敏感資料分級與限制存取</li>
+              <li>高風險操作需二次驗證（MFA）或審批流程</li>
+              <li>權限異動須經授權主管核准並留存紀錄</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第六條</span>
+              <span>操作紀錄與稽核</span>
+            </h3>
+            <ul>
+              <li>所有關鍵操作均會記錄於系統日誌（Audit Log）</li>
+              <li>日誌內容包含：使用者、時間、行為、變更內容</li>
+              <li>日誌不得任意刪除或竄改</li>
+              <li>系統管理員可於合法範圍內進行查詢與稽核</li>
+              <li>發現異常行為時，將進行調查並保留紀錄</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第七條</span>
+              <span>資料保護與資安措施</span>
+            </h3>
+            <p>本公司採取以下措施保障資料安全：</p>
+            <ul>
+              <li>傳輸與儲存資料加密（HTTPS / Encryption at Rest）</li>
+              <li>存取控制與身份驗證機制</li>
+              <li>防火牆、入侵偵測與防護系統</li>
+              <li>定期漏洞掃描與資安檢測</li>
+              <li>備份機制與災害復原計畫（Backup &amp; DR）</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第八條</span>
+              <span>資料分享與揭露</span>
+            </h3>
+            <p>除以下情況外，不得將資料提供予第三方：</p>
+            <ul>
+              <li>經公司授權之業務需求</li>
+              <li>法律規定或主管機關要求</li>
+              <li>資安事件調查或風險控管需要</li>
+              <li>委外廠商於保密協議下執行必要服務</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第九條</span>
+              <span>資料保存與銷毀</span>
+            </h3>
+            <ul>
+              <li>操作日誌至少保存＿＿年（建議：1–3 年）</li>
+              <li>業務資料依系統用途與法規保存</li>
+              <li>到期資料應安全刪除或匿名化</li>
+              <li>備份資料亦需符合相同管理規範</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第十條</span>
+              <span>使用者義務</span>
+            </h3>
+            <p>使用者應遵守以下規範：</p>
+            <ul>
+              <li>不得將帳號提供他人使用</li>
+              <li>不得嘗試未授權存取或繞過系統限制</li>
+              <li>不得下載、外流或不當使用公司資料</li>
+              <li>不得洩漏任何機密資訊</li>
+              <li>發現資安問題應立即通報</li>
+              <li>違反規定者將依公司制度處理（含懲處或法律責任）</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第十一條</span>
+              <span>監控與檢查</span>
+            </h3>
+            <ul>
+              <li>本公司得基於資安與管理目的，監控系統使用行為</li>
+              <li>包含但不限於：登入紀錄、操作紀錄、資料存取行為</li>
+              <li>使用者於使用本系統時，即同意上述監控措施</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第十二條</span>
+              <span>條款修訂</span>
+            </h3>
+            <p>本公司得隨時修訂本條款，修訂內容將公告於系統中並即時生效。</p>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第十三條</span>
+              <span>聯絡窗口</span>
+            </h3>
+            <p>如有相關問題，請聯絡：</p>
+            <ul>
+              <li>公司名稱：＿＿＿＿＿＿＿＿</li>
+              <li>資訊安全負責人：＿＿＿＿＿＿＿＿</li>
+              <li>聯絡信箱：＿＿＿＿＿＿＿＿</li>
+              <li>聯絡電話：＿＿＿＿＿＿＿＿</li>
+            </ul>
+          </article>
+
+          <article class="policy-dialog__article">
+            <h3 class="policy-dialog__article-heading">
+              <span class="policy-dialog__article-number">第十四條</span>
+              <span>附則</span>
+            </h3>
+            <p>本條款未盡事宜，依公司內部規範及相關法令辦理。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const openButton = document.querySelector("[data-dialog-open]");
+      const dialog = document.querySelector("[data-policy-dialog]");
+      const panel = dialog?.querySelector(".policy-dialog__panel");
+      const closeButton = dialog?.querySelector("[data-dialog-close]");
+      let activeElementBeforeOpen = null;
+      let bodyOverflowBackup = "";
+
+      if (!openButton || !dialog || !panel || !closeButton) {
+        return;
+      }
+
+      function openDialog() {
+        activeElementBeforeOpen = document.activeElement;
+        bodyOverflowBackup = document.body.style.overflow;
+        dialog.hidden = false;
+        requestAnimationFrame(() => {
+          dialog.classList.add("is-open");
+          document.body.style.overflow = "hidden";
+          closeButton.focus();
+        });
+      }
+
+      function closeDialog() {
+        dialog.classList.remove("is-open");
+        document.body.style.overflow = bodyOverflowBackup;
+        window.setTimeout(() => {
+          dialog.hidden = true;
+          if (activeElementBeforeOpen instanceof HTMLElement) {
+            activeElementBeforeOpen.focus();
+          }
+        }, 180);
+      }
+
+      openButton.addEventListener("click", openDialog);
+      closeButton.addEventListener("click", closeDialog);
+
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) {
+          closeDialog();
+        }
+      });
+
+      window.addEventListener("keydown", (event) => {
+        if (!dialog.classList.contains("is-open")) {
+          return;
+        }
+
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeDialog();
+        }
+      });
+    })();
+  </script>
 </body>
 
 </html>
