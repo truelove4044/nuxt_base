@@ -16,6 +16,9 @@
         <div class="brand-panel__glow"></div>
         <img class="brand-panel__image" src="../public/login.png" alt="" width="800" height="800">
       </div>
+      <div class="auth-brand-particles" aria-hidden="true">
+        <div id="auth-brand-particles" class="auth-brand-particles__host"></div>
+      </div>
 
       <div class="brand-panel__content">
         <img class="brand-panel__logo" src="../public/logo.svg" alt="品牌識別" width="1938" height="321">
@@ -284,6 +287,7 @@
     </section>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@tsparticles/slim@3.9.1/tsparticles.slim.bundle.min.js"></script>
   <script>
     (() => {
       const openButton = document.querySelector("[data-dialog-open]");
@@ -338,6 +342,144 @@
           closeDialog();
         }
       });
+
+      function setupBrandParticles() {
+        const containerId = "auth-brand-particles";
+        const tabletQuery = window.matchMedia("(min-width: 768px)");
+        const desktopQuery = window.matchMedia("(min-width: 1024px)");
+        const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let particleContainer;
+
+        function getOptions() {
+          const isDesktop = desktopQuery.matches;
+
+          return {
+            fpsLimit: 60,
+            detectRetina: true,
+            fullScreen: {
+              enable: false,
+            },
+            pauseOnBlur: true,
+            pauseOnOutsideViewport: true,
+            background: {
+              color: "transparent",
+            },
+            particles: {
+              number: {
+                value: isDesktop ? 46 : 30,
+                density: {
+                  enable: true,
+                  value_area: 820,
+                },
+              },
+              color: {
+                value: [
+                  "rgba(255, 255, 255, 0.68)",
+                  "rgba(130, 216, 78, 0.42)",
+                  "rgba(238, 125, 59, 0.34)",
+                ],
+              },
+              shape: {
+                type: "circle",
+                stroke: {
+                  width: 0,
+                  color: "#000000",
+                },
+              },
+              opacity: {
+                value: 0.42,
+                random: true,
+                anim: {
+                  enable: false,
+                },
+              },
+              size: {
+                value: 3,
+                random: true,
+                anim: {
+                  enable: false,
+                  size_min: 2,
+                  sync: false,
+                },
+              },
+              links: {
+                enable: true,
+                distance: 136,
+                color: "rgba(130, 216, 78, 0.28)",
+                frequency: 1,
+                opacity: 0.26,
+                width: 1,
+                triangles: {
+                  enable: true,
+                  frequency: 1,
+                  color: "rgba(238, 125, 59, 0.38)",
+                  opacity: 0.12,
+                },
+              },
+              move: {
+                enable: true,
+                speed: isDesktop ? 1.85 : 1.45,
+                direction: "none",
+                random: false,
+                straight: false,
+                out_mode: "out",
+                attract: {
+                  enable: false,
+                  rotateX: 600,
+                  rotateY: 1200,
+                },
+              },
+            },
+            interactivity: {
+              detect_on: "canvas",
+              events: {
+                onhover: {
+                  enable: false,
+                  mode: "repulse",
+                },
+                onclick: {
+                  enable: false,
+                  mode: "push",
+                },
+                resize: true,
+              },
+            },
+          };
+        }
+
+        async function destroyParticles() {
+          if (!particleContainer) {
+            return;
+          }
+
+          await particleContainer.destroy();
+          particleContainer = undefined;
+        }
+
+        async function ensureParticles() {
+          const canRender = tabletQuery.matches && !reducedMotionQuery.matches;
+
+          if (!canRender || !window.tsParticles) {
+            await destroyParticles();
+            return;
+          }
+
+          await destroyParticles();
+          particleContainer = await window.tsParticles.load({
+            id: containerId,
+            options: getOptions(),
+          });
+        }
+
+        tabletQuery.addEventListener("change", ensureParticles);
+        desktopQuery.addEventListener("change", ensureParticles);
+        reducedMotionQuery.addEventListener("change", ensureParticles);
+        ensureParticles();
+
+        window.addEventListener("pagehide", destroyParticles);
+      }
+
+      setupBrandParticles();
     })();
   </script>
 </body>

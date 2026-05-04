@@ -99,6 +99,26 @@ button {
   pointer-events: none;
 }
 
+.auth-brand-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.auth-brand-particles__host {
+  width: 100%;
+  height: 100%;
+  opacity: 0.94;
+}
+
+.auth-brand-particles__host canvas {
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0.78;
+}
+
 .brand-panel__art::before {
   position: absolute;
   inset: 0;
@@ -654,6 +674,10 @@ button {
 }
 
 @media (max-width: 767px) {
+  .auth-brand-particles {
+    display: none;
+  }
+
   .brand-panel__art::before {
     background: linear-gradient(
       180deg,
@@ -705,6 +729,10 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .auth-brand-particles {
+    display: none;
+  }
+
   .policy-dialog,
   .policy-dialog__panel {
     transition: none;
