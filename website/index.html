@@ -6,285 +6,1017 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="馥華營運管理系統傳統">
   <title>後台登入 | 馥華營運管理系統</title>
-  <link rel="stylesheet" href="./style.css">
+  <!-- <link rel="stylesheet" href="./style.css"> -->
+  <style>
+    :root {
+      --color-primary: #69ba3a;
+      --color-primary-dark: #4d9630;
+      --color-accent: #d88745;
+      --color-danger: #b54545;
+      --color-text: #24301f;
+      --color-text-muted: #687260;
+      --color-text-soft: #8b9484;
+      --color-border: #d7ded3;
+      --color-border-strong: #aab7a1;
+      --color-surface: #ffffff;
+      --color-surface-muted: #f5f7f2;
+      --shadow-card: 0 22px 60px rgba(89, 87, 87, 0.1);
+      --shadow-card-hover: 0 28px 76px rgba(89, 87, 87, 0.14);
+      --shadow-button-hover: 0 14px 28px rgba(105, 186, 58, 0.24);
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --space-16: 64px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      color: var(--color-text);
+      background: #f7f8f4;
+    }
+
+    body,
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    body {
+      min-width: 320px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .auth-shell {
+      display: grid;
+      min-height: 100dvh;
+    }
+
+    .brand-panel {
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      align-items: center;
+      min-height: 100%;
+      overflow: hidden;
+      padding: var(--space-8) var(--space-5) var(--space-6);
+      background:
+        radial-gradient(circle at top left,
+          rgba(130, 216, 78, 0.18),
+          transparent 30%),
+        radial-gradient(circle at bottom right,
+          rgba(238, 125, 59, 0.12),
+          transparent 28%),
+        linear-gradient(160deg, #33432d 0%, #42543a 48%, #55684d 100%);
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .brand-panel__art {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .auth-brand-particles {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .auth-brand-particles__host {
+      width: 100%;
+      height: 100%;
+      opacity: 0.94;
+    }
+
+    .auth-brand-particles__host canvas {
+      width: 100% !important;
+      height: 100% !important;
+      opacity: 0.78;
+    }
+
+    .brand-panel__art::before {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+          rgba(34, 46, 31, 0.65) 15%,
+          rgba(34, 46, 31, 0.35) 40%,
+          rgba(34, 46, 31, 0.12) 65%,
+          rgba(34, 46, 31, 0.02) 95%,
+          transparent 100%);
+      content: "";
+    }
+
+    .brand-panel__glow {
+      position: absolute;
+      right: 4%;
+      bottom: 2%;
+      width: min(38vw, 360px);
+      aspect-ratio: 1;
+      border-radius: 999px;
+      background: radial-gradient(circle,
+          rgba(130, 216, 78, 0.2) 0%,
+          rgba(130, 216, 78, 0.04) 58%,
+          transparent 76%);
+      filter: blur(10px);
+      opacity: 0.9;
+    }
+
+    .brand-panel__image {
+      position: absolute;
+      right: -10%;
+      bottom: -2%;
+      width: min(46vw, 560px);
+      height: auto;
+      opacity: 0.85;
+      object-fit: contain;
+      filter: drop-shadow(0 22px 48px rgba(18, 25, 17, 0.34));
+    }
+
+    .brand-panel::before,
+    .brand-panel::after {
+      position: absolute;
+      z-index: 2;
+      border-radius: 999px;
+      content: "";
+      filter: blur(12px);
+      pointer-events: none;
+    }
+
+    .brand-panel::before {
+      top: -72px;
+      left: -72px;
+      width: 240px;
+      height: 240px;
+      background: rgba(238, 125, 59, 0.2);
+    }
+
+    .brand-panel::after {
+      right: -120px;
+      bottom: -100px;
+      width: 280px;
+      height: 280px;
+      background: rgba(130, 216, 78, 0.14);
+    }
+
+    .brand-panel__content {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      gap: var(--space-4);
+      width: min(100%, 560px);
+    }
+
+    .brand-panel__logo {
+      width: min(260px, 65vw);
+      height: auto;
+      filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.14));
+    }
+
+    .brand-panel__eyebrow {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.875rem;
+      line-height: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-panel__title {
+      max-width: 14ch;
+      color: #fff;
+      font-size: clamp(2.4rem, 4.4vw, 3.75rem);
+      line-height: 1.08;
+    }
+
+    .brand-panel__subtitle {
+      max-width: 19ch;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+      font-weight: 600;
+      line-height: 1.18;
+    }
+
+    .brand-panel__description {
+      max-width: 42ch;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 1rem;
+      line-height: 24px;
+    }
+
+    .brand-panel__policy {
+      justify-self: start;
+      min-height: 44px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #c5f0a9;
+      font-size: 0.875rem;
+      font-weight: 700;
+      line-height: 44px;
+      text-decoration: underline;
+      text-decoration-color: rgba(197, 240, 169, 0.64);
+      text-underline-offset: 3px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .brand-panel__policy:hover {
+      color: #e8ffd9;
+    }
+
+    .login-area {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: var(--space-10) var(--space-5);
+    }
+
+    .login-column {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: min(100%, 440px);
+      min-height: 100%;
+    }
+
+    .login-card {
+      width: 100%;
+      align-self: center;
+      padding: var(--space-6);
+      border: 1px solid color-mix(in srgb, var(--color-border) 92%, #ffffff);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: var(--shadow-card);
+    }
+
+    .login-card__header {
+      display: grid;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+
+    .login-card__overline {
+      color: var(--color-accent);
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .login-card__title {
+      font-size: 1.5rem;
+      line-height: 34px;
+    }
+
+    .login-card__description,
+    .login-card__meta,
+    .login-form__footer {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      line-height: 20px;
+    }
+
+    .login-form,
+    .form-field {
+      display: grid;
+    }
+
+    .login-form {
+      gap: var(--space-4);
+    }
+
+    .form-field {
+      gap: var(--space-2);
+    }
+
+    .form-field__label {
+      color: var(--color-text);
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .form-field__input {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 var(--space-4);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-size: 1rem;
+      line-height: 24px;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+    }
+
+    .form-field__input::placeholder {
+      color: var(--color-text-soft);
+    }
+
+    .form-field__input:hover {
+      border-color: var(--color-border-strong);
+    }
+
+    .form-field__input:focus-visible {
+      outline: 0;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 4px rgba(105, 186, 58, 0.24);
+    }
+
+    .login-form__actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: calc(var(--space-2) * -1);
+    }
+
+    .login-form__link {
+      color: var(--color-primary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .login-form__link:hover {
+      color: var(--color-primary-dark);
+    }
+
+    .login-form__submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 52px;
+      padding: 0 var(--space-5);
+      border-radius: 16px;
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      transition:
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.14s ease;
+    }
+
+    .login-form__submit:hover {
+      background: var(--color-primary-dark);
+      box-shadow: var(--shadow-button-hover);
+    }
+
+    .login-form__submit:active {
+      transform: translateY(1px);
+    }
+
+    .login-form__submit:focus-visible,
+    .login-form__link:focus-visible,
+    .brand-panel__policy:focus-visible {
+      outline: 0;
+      border-radius: 999px;
+      box-shadow: 0 0 0 4px rgba(142, 173, 146, 0.28);
+    }
+
+    .login-form__credentials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      line-height: 20px;
+    }
+
+    .login-form__credentials span {
+      color: var(--color-primary-dark);
+      font-weight: 600;
+    }
+
+    .login-card__meta {
+      margin-top: var(--space-6);
+      padding-top: var(--space-5);
+      border-top: 1px solid rgba(215, 222, 211, 0.9);
+    }
+
+    .login-column__copyright {
+      margin-top: var(--space-5);
+      color: var(--color-text-soft);
+      font-size: 0.75rem;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .policy-dialog {
+      position: fixed;
+      inset: 0;
+      z-index: 1500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      background: rgba(46, 55, 42, 0.52);
+      opacity: 0;
+      backdrop-filter: blur(20px);
+      transition: opacity 0.2s ease;
+    }
+
+    .policy-dialog.is-open {
+      opacity: 1;
+    }
+
+    .policy-dialog__panel {
+      display: flex;
+      flex-direction: column;
+      width: min(760px, calc(100vw - 32px));
+      min-height: min(58vh, 520px);
+      max-height: min(82vh, 760px);
+      overflow: hidden;
+      border: 1px solid rgba(205, 210, 196, 0.92);
+      border-radius: 18px;
+      background: var(--color-surface);
+      box-shadow: 0 30px 80px rgba(24, 28, 22, 0.28);
+      opacity: 0;
+      transform: translateY(60px);
+      transition:
+        opacity 0.24s ease-out,
+        transform 0.24s ease-out;
+    }
+
+    .policy-dialog.is-open .policy-dialog__panel {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .policy-dialog__header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid rgba(221, 222, 218, 0.95);
+      background: rgba(255, 254, 251, 0.96);
+    }
+
+    .policy-dialog__title {
+      color: var(--color-text);
+      font-size: 1.25rem;
+      line-height: 1.25;
+    }
+
+    .policy-dialog__close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    }
+
+    .policy-dialog__close:hover {
+      color: var(--color-text);
+      background: rgba(118, 113, 111, 0.09);
+    }
+
+    .policy-dialog__close:focus-visible {
+      outline: 0;
+      box-shadow: 0 0 0 4px rgba(105, 186, 58, 0.22);
+    }
+
+    .policy-dialog__close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .policy-dialog__body {
+      flex: 1;
+      min-height: 220px;
+      overflow: auto;
+      padding: var(--space-5);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    }
+
+    .policy-dialog__body::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .policy-dialog__body::-webkit-scrollbar-button {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+
+    .policy-dialog__body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .policy-dialog__body::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 999px;
+    }
+
+    .policy-dialog__body::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .policy-dialog__content {
+      padding-bottom: var(--space-6);
+      color: var(--color-text-muted);
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .policy-dialog__article+.policy-dialog__article {
+      margin-top: var(--space-6);
+      padding-top: var(--space-5);
+      border-top: 1px solid rgba(221, 222, 218, 0.82);
+    }
+
+    .policy-dialog__article-heading {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin: 0 0 var(--space-3);
+      color: var(--color-text);
+      font-size: 1.125rem;
+      line-height: 1.4;
+    }
+
+    .policy-dialog__article-number {
+      min-width: 4.2em;
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    .policy-dialog__article p+p {
+      margin-top: var(--space-2);
+    }
+
+    .policy-dialog__article ul {
+      margin: var(--space-3) 0 0;
+      padding-left: 1.4em;
+    }
+
+    .policy-dialog__article li+li {
+      margin-top: var(--space-2);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .login-card {
+        transition: box-shadow 0.24s ease;
+      }
+
+      .login-card:hover {
+        box-shadow: var(--shadow-card-hover);
+      }
+    }
+
+    @media (min-width: 768px) {
+      .brand-panel {
+        padding: var(--space-12) var(--space-8);
+      }
+
+      .brand-panel__image {
+        top: 50%;
+        right: -5%;
+        width: min(44vw, 360px);
+        transform: translateY(-50%);
+      }
+
+      .login-area {
+        padding: var(--space-12) var(--space-8);
+      }
+
+      .login-card {
+        padding: var(--space-10);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .auth-shell {
+        grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+      }
+
+      .brand-panel {
+        padding: var(--space-16) var(--space-12);
+      }
+
+      .brand-panel__content {
+        transform: translateY(-30%);
+      }
+
+      .brand-panel__image {
+        top: auto;
+        right: 0;
+        bottom: 0;
+        width: min(38vw, 500px);
+        transform: none;
+      }
+
+      .login-column__copyright {
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        width: 100%;
+        transform: translateX(-50%);
+      }
+    }
+
+    @media (max-width: 1023px) {
+      .login-column {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .auth-brand-particles {
+        display: none;
+      }
+
+      .brand-panel__art::before {
+        background: linear-gradient(180deg,
+            rgba(34, 46, 31, 0.34) 0%,
+            rgba(34, 46, 31, 0.14) 100%);
+      }
+
+      .brand-panel__glow {
+        right: -12%;
+        bottom: -10%;
+        width: 220px;
+        opacity: 0.72;
+      }
+
+      .brand-panel__image {
+        top: 50%;
+        right: -5%;
+        width: 260px;
+        transform: translateY(-50%);
+      }
+
+      .policy-dialog {
+        align-items: flex-end;
+        padding: var(--space-3);
+      }
+
+      .policy-dialog__panel {
+        width: 100%;
+        min-height: min(64vh, 560px);
+        max-height: 86vh;
+        border-radius: 16px 16px 0 0;
+      }
+
+      .policy-dialog__header,
+      .policy-dialog__body {
+        padding: var(--space-4);
+      }
+
+      .policy-dialog__title {
+        font-size: 1.125rem;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .brand-panel__image {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .auth-brand-particles {
+        display: none;
+      }
+
+      .policy-dialog,
+      .policy-dialog__panel {
+        transition: none;
+      }
+    }
+  </style>
 </head>
 
-<body>
-  <section class="auth-shell">
-    <aside class="brand-panel" aria-label="品牌資訊">
-      <div class="brand-panel__art" aria-hidden="true">
-        <div class="brand-panel__glow"></div>
-        <img class="brand-panel__image" src="../public/login.png" alt="" width="800" height="800">
-      </div>
-      <div class="auth-brand-particles" aria-hidden="true">
-        <div id="auth-brand-particles" class="auth-brand-particles__host"></div>
-      </div>
-
-      <div class="brand-panel__content">
-        <img class="brand-panel__logo" src="../public/logo.svg" alt="品牌識別" width="1938" height="321">
-        <p class="brand-panel__eyebrow">Administration Portal</p>
-        <h1 class="brand-panel__title">馥華營運管理系統</h1>
-        <h2 class="brand-panel__subtitle">
-          系統資料屬馥華全球電商機密文件
-        </h2>
-        <p class="brand-panel__description">
-          未經授權，禁止複製、轉錄或攝影等其他洩密行為。
-        </p>
-        <button class="brand-panel__policy" type="button" data-dialog-open>
-          查看保密與隱私條款
-        </button>
-      </div>
-    </aside>
-
-    <main id="main-content" class="login-area">
-      <div class="login-column">
-        <section class="login-card" aria-labelledby="login-title">
-          <header class="login-card__header">
-            <p class="login-card__overline">Welcome back</p>
-            <h2 id="login-title" class="login-card__title">登入管理後台</h2>
-            <p class="login-card__description">
-              請使用您的內部帳號與密碼登入。若超過 8 秒未完成驗證，
-              系統會提示您重新嘗試。
-            </p>
-          </header>
-
-          <form class="login-form" method="post" action="">
-            <div class="form-field">
-              <label class="form-field__label" for="account">帳號</label>
-              <input id="account" class="form-field__input" type="email" name="account" autocomplete="username"
-                inputmode="email" placeholder="admin@example.com" required>
-            </div>
-
-            <div class="form-field">
-              <label class="form-field__label" for="password">密碼</label>
-              <input id="password" class="form-field__input" type="password" name="password"
-                autocomplete="current-password" placeholder="Password!" minlength="6" required>
-            </div>
-
-            <button class="login-form__submit" type="submit">
-              登入後台
-            </button>
-
-            <p class="login-form__footer">
-              登入即代表您同意遵循內部資料安全與操作規範。
-            </p>
-
-          </form>
-
-          <footer class="login-card__meta">
-            <p>需要重設密碼或開通權限，請聯絡系統管理員。</p>
-          </footer>
-        </section>
-
-        <p class="login-column__copyright">
-          Copyright © Forwardmall. All rights reserved.
-        </p>
-      </div>
-    </main>
-  </section>
-
-  <div class="policy-dialog" data-policy-dialog hidden>
-    <section class="policy-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="policy-dialog-title"
-      aria-describedby="policy-dialog-content" tabindex="-1">
-      <header class="policy-dialog__header">
-        <h2 id="policy-dialog-title" class="policy-dialog__title">
-          公司內部系統保密與隱私條款
-        </h2>
-        <button class="policy-dialog__close" type="button" aria-label="關閉對話框" data-dialog-close>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-linecap="round"
-              stroke-linejoin="round" stroke-width="1.8" />
-          </svg>
-        </button>
-      </header>
-
-      <div id="policy-dialog-content" class="policy-dialog__body">
-        <div class="policy-dialog__content">
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第一條</span>
-              <span>適用範圍</span>
-            </h3>
-            <p>本條款適用於本公司內部資訊系統、平台、工具與相關服務（以下稱「本系統」）。</p>
-            <p>本系統僅限授權人員使用，使用者於登入或使用本系統時，即視為同意本條款。</p>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第二條</span>
-              <span>保密義務</span>
-            </h3>
-            <p>使用者對於本系統內之所有資料，均負有保密義務，包括但不限於：</p>
-            <p>未經授權，不得以任何形式（包含但不限於截圖、下載、轉傳、口述）對外揭露。</p>
-            <ul>
-              <li>公司營運資料</li>
-              <li>客戶資料</li>
-              <li>商業機密與技術資訊</li>
-              <li>系統資料與內部文件</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第三條</span>
-              <span>資料蒐集範圍</span>
-            </h3>
-            <p>本系統基於營運、管理及資安需求，蒐集以下資料：</p>
-            <ul>
-              <li>身分識別資料：姓名、員工編號、部門、職稱</li>
-              <li>帳號與驗證資料：帳號、密碼（加密）、登入憑證、多重驗證資訊</li>
-              <li>系統操作紀錄：登入/登出時間、IP 位址、裝置資訊、操作行為（Audit Log）</li>
-              <li>業務資料：使用者於系統內輸入、上傳或產生之資料</li>
-              <li>系統安全資料：異常登入、權限變更、存取紀錄</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第四條</span>
-              <span>資料使用目的</span>
-            </h3>
-            <ul>
-              <li>身分驗證與權限控管（RBAC/ABAC）</li>
-              <li>系統功能提供與優化</li>
-              <li>操作稽核與行為追蹤（Audit Trail）</li>
-              <li>資安監控、異常偵測與事件調查</li>
-              <li>內部管理、績效分析與流程改善</li>
-              <li>法令遵循與內外部稽核</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第五條</span>
-              <span>權限控管機制</span>
-            </h3>
-            <p>本系統採取嚴格權限管理制度：</p>
-            <ul>
-              <li>最小權限原則（Least Privilege）</li>
-              <li>角色權限控管（RBAC）</li>
-              <li>敏感資料分級與限制存取</li>
-              <li>高風險操作需二次驗證（MFA）或審批流程</li>
-              <li>權限異動須經授權主管核准並留存紀錄</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第六條</span>
-              <span>操作紀錄與稽核</span>
-            </h3>
-            <ul>
-              <li>所有關鍵操作均會記錄於系統日誌（Audit Log）</li>
-              <li>日誌內容包含：使用者、時間、行為、變更內容</li>
-              <li>日誌不得任意刪除或竄改</li>
-              <li>系統管理員可於合法範圍內進行查詢與稽核</li>
-              <li>發現異常行為時，將進行調查並保留紀錄</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第七條</span>
-              <span>資料保護與資安措施</span>
-            </h3>
-            <p>本公司採取以下措施保障資料安全：</p>
-            <ul>
-              <li>傳輸與儲存資料加密（HTTPS / Encryption at Rest）</li>
-              <li>存取控制與身份驗證機制</li>
-              <li>防火牆、入侵偵測與防護系統</li>
-              <li>定期漏洞掃描與資安檢測</li>
-              <li>備份機制與災害復原計畫（Backup &amp; DR）</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第八條</span>
-              <span>資料分享與揭露</span>
-            </h3>
-            <p>除以下情況外，不得將資料提供予第三方：</p>
-            <ul>
-              <li>經公司授權之業務需求</li>
-              <li>法律規定或主管機關要求</li>
-              <li>資安事件調查或風險控管需要</li>
-              <li>委外廠商於保密協議下執行必要服務</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第九條</span>
-              <span>資料保存與銷毀</span>
-            </h3>
-            <ul>
-              <li>操作日誌至少保存＿＿年（建議：1–3 年）</li>
-              <li>業務資料依系統用途與法規保存</li>
-              <li>到期資料應安全刪除或匿名化</li>
-              <li>備份資料亦需符合相同管理規範</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第十條</span>
-              <span>使用者義務</span>
-            </h3>
-            <p>使用者應遵守以下規範：</p>
-            <ul>
-              <li>不得將帳號提供他人使用</li>
-              <li>不得嘗試未授權存取或繞過系統限制</li>
-              <li>不得下載、外流或不當使用公司資料</li>
-              <li>不得洩漏任何機密資訊</li>
-              <li>發現資安問題應立即通報</li>
-              <li>違反規定者將依公司制度處理（含懲處或法律責任）</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第十一條</span>
-              <span>監控與檢查</span>
-            </h3>
-            <ul>
-              <li>本公司得基於資安與管理目的，監控系統使用行為</li>
-              <li>包含但不限於：登入紀錄、操作紀錄、資料存取行為</li>
-              <li>使用者於使用本系統時，即同意上述監控措施</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第十二條</span>
-              <span>條款修訂</span>
-            </h3>
-            <p>本公司得隨時修訂本條款，修訂內容將公告於系統中並即時生效。</p>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第十三條</span>
-              <span>聯絡窗口</span>
-            </h3>
-            <p>如有相關問題，請聯絡：</p>
-            <ul>
-              <li>公司名稱：＿＿＿＿＿＿＿＿</li>
-              <li>資訊安全負責人：＿＿＿＿＿＿＿＿</li>
-              <li>聯絡信箱：＿＿＿＿＿＿＿＿</li>
-              <li>聯絡電話：＿＿＿＿＿＿＿＿</li>
-            </ul>
-          </article>
-
-          <article class="policy-dialog__article">
-            <h3 class="policy-dialog__article-heading">
-              <span class="policy-dialog__article-number">第十四條</span>
-              <span>附則</span>
-            </h3>
-            <p>本條款未盡事宜，依公司內部規範及相關法令辦理。</p>
-          </article>
+<body style="padding: 0; margin: 0;">
+  <div class="new_login">
+    <section class="auth-shell">
+      <aside class="brand-panel" aria-label="品牌資訊">
+        <div class="brand-panel__art" aria-hidden="true">
+          <div class="brand-panel__glow"></div>
+          <img class="brand-panel__image" src="./images/login.png" alt="" width="800" height="800">
         </div>
-      </div>
+        <div class="auth-brand-particles" aria-hidden="true">
+          <div id="auth-brand-particles" class="auth-brand-particles__host"></div>
+        </div>
+
+        <div class="brand-panel__content">
+          <img class="brand-panel__logo" src="./images/logo.svg" alt="品牌識別">
+          <p class="brand-panel__eyebrow">Administration Portal</p>
+          <h1 class="brand-panel__title">馥華營運管理系統</h1>
+          <h2 class="brand-panel__subtitle">
+            系統資料屬馥華全球電商機密文件
+          </h2>
+          <p class="brand-panel__description">
+            未經授權，禁止複製、轉錄或攝影等其他洩密行為。
+          </p>
+          <button class="brand-panel__policy" type="button" data-dialog-open>
+            查看保密與隱私條款
+          </button>
+        </div>
+      </aside>
+
+      <main id="main-content" class="login-area">
+        <div class="login-column">
+          <section class="login-card" aria-labelledby="login-title">
+            <header class="login-card__header">
+              <p class="login-card__overline">Welcome back</p>
+              <h2 id="login-title" class="login-card__title">登入管理後台</h2>
+              <p class="login-card__description">
+                請使用您的內部帳號與密碼登入。若超過 8 秒未完成驗證，
+                系統會提示您重新嘗試。
+              </p>
+            </header>
+
+            <form class="login-form" method="post" action="">
+              <div class="form-field">
+                <label class="form-field__label" for="account">帳號</label>
+                <input id="account" class="form-field__input" type="email" name="account" autocomplete="username"
+                  inputmode="email" placeholder="admin@example.com" required>
+              </div>
+
+              <div class="form-field">
+                <label class="form-field__label" for="password">密碼</label>
+                <input id="password" class="form-field__input" type="password" name="password"
+                  autocomplete="current-password" placeholder="Password!" minlength="6" required>
+              </div>
+
+              <button class="login-form__submit" type="submit">
+                登入後台
+              </button>
+
+              <p class="login-form__footer">
+                登入即代表您同意遵循內部資料安全與操作規範。
+              </p>
+
+            </form>
+
+            <footer class="login-card__meta">
+              <p>需要重設密碼或開通權限，請聯絡系統管理員。</p>
+            </footer>
+          </section>
+
+          <p class="login-column__copyright">
+            Copyright © Forwardmall. All rights reserved.
+          </p>
+        </div>
+      </main>
     </section>
+
+    <div class="policy-dialog" data-policy-dialog hidden>
+      <section class="policy-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="policy-dialog-title"
+        aria-describedby="policy-dialog-content" tabindex="-1">
+        <header class="policy-dialog__header">
+          <h2 id="policy-dialog-title" class="policy-dialog__title">
+            公司內部系統保密與隱私條款
+          </h2>
+          <button class="policy-dialog__close" type="button" aria-label="關閉對話框" data-dialog-close>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="1.8" />
+            </svg>
+          </button>
+        </header>
+
+        <div id="policy-dialog-content" class="policy-dialog__body">
+          <div class="policy-dialog__content">
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第一條</span>
+                <span>適用範圍</span>
+              </h3>
+              <p>本條款適用於本公司內部資訊系統、平台、工具與相關服務（以下稱「本系統」）。</p>
+              <p>本系統僅限授權人員使用，使用者於登入或使用本系統時，即視為同意本條款。</p>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第二條</span>
+                <span>保密義務</span>
+              </h3>
+              <p>使用者對於本系統內之所有資料，均負有保密義務，包括但不限於：</p>
+              <p>未經授權，不得以任何形式（包含但不限於截圖、下載、轉傳、口述）對外揭露。</p>
+              <ul>
+                <li>公司營運資料</li>
+                <li>客戶資料</li>
+                <li>商業機密與技術資訊</li>
+                <li>系統資料與內部文件</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第三條</span>
+                <span>資料蒐集範圍</span>
+              </h3>
+              <p>本系統基於營運、管理及資安需求，蒐集以下資料：</p>
+              <ul>
+                <li>身分識別資料：姓名、員工編號、部門、職稱</li>
+                <li>帳號與驗證資料：帳號、密碼（加密）、登入憑證、多重驗證資訊</li>
+                <li>系統操作紀錄：登入/登出時間、IP 位址、裝置資訊、操作行為（Audit Log）</li>
+                <li>業務資料：使用者於系統內輸入、上傳或產生之資料</li>
+                <li>系統安全資料：異常登入、權限變更、存取紀錄</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第四條</span>
+                <span>資料使用目的</span>
+              </h3>
+              <ul>
+                <li>身分驗證與權限控管（RBAC/ABAC）</li>
+                <li>系統功能提供與優化</li>
+                <li>操作稽核與行為追蹤（Audit Trail）</li>
+                <li>資安監控、異常偵測與事件調查</li>
+                <li>內部管理、績效分析與流程改善</li>
+                <li>法令遵循與內外部稽核</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第五條</span>
+                <span>權限控管機制</span>
+              </h3>
+              <p>本系統採取嚴格權限管理制度：</p>
+              <ul>
+                <li>最小權限原則（Least Privilege）</li>
+                <li>角色權限控管（RBAC）</li>
+                <li>敏感資料分級與限制存取</li>
+                <li>高風險操作需二次驗證（MFA）或審批流程</li>
+                <li>權限異動須經授權主管核准並留存紀錄</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第六條</span>
+                <span>操作紀錄與稽核</span>
+              </h3>
+              <ul>
+                <li>所有關鍵操作均會記錄於系統日誌（Audit Log）</li>
+                <li>日誌內容包含：使用者、時間、行為、變更內容</li>
+                <li>日誌不得任意刪除或竄改</li>
+                <li>系統管理員可於合法範圍內進行查詢與稽核</li>
+                <li>發現異常行為時，將進行調查並保留紀錄</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第七條</span>
+                <span>資料保護與資安措施</span>
+              </h3>
+              <p>本公司採取以下措施保障資料安全：</p>
+              <ul>
+                <li>傳輸與儲存資料加密（HTTPS / Encryption at Rest）</li>
+                <li>存取控制與身份驗證機制</li>
+                <li>防火牆、入侵偵測與防護系統</li>
+                <li>定期漏洞掃描與資安檢測</li>
+                <li>備份機制與災害復原計畫（Backup &amp; DR）</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第八條</span>
+                <span>資料分享與揭露</span>
+              </h3>
+              <p>除以下情況外，不得將資料提供予第三方：</p>
+              <ul>
+                <li>經公司授權之業務需求</li>
+                <li>法律規定或主管機關要求</li>
+                <li>資安事件調查或風險控管需要</li>
+                <li>委外廠商於保密協議下執行必要服務</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第九條</span>
+                <span>資料保存與銷毀</span>
+              </h3>
+              <ul>
+                <li>操作日誌至少保存＿＿年（建議：1–3 年）</li>
+                <li>業務資料依系統用途與法規保存</li>
+                <li>到期資料應安全刪除或匿名化</li>
+                <li>備份資料亦需符合相同管理規範</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第十條</span>
+                <span>使用者義務</span>
+              </h3>
+              <p>使用者應遵守以下規範：</p>
+              <ul>
+                <li>不得將帳號提供他人使用</li>
+                <li>不得嘗試未授權存取或繞過系統限制</li>
+                <li>不得下載、外流或不當使用公司資料</li>
+                <li>不得洩漏任何機密資訊</li>
+                <li>發現資安問題應立即通報</li>
+                <li>違反規定者將依公司制度處理（含懲處或法律責任）</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第十一條</span>
+                <span>監控與檢查</span>
+              </h3>
+              <ul>
+                <li>本公司得基於資安與管理目的，監控系統使用行為</li>
+                <li>包含但不限於：登入紀錄、操作紀錄、資料存取行為</li>
+                <li>使用者於使用本系統時，即同意上述監控措施</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第十二條</span>
+                <span>條款修訂</span>
+              </h3>
+              <p>本公司得隨時修訂本條款，修訂內容將公告於系統中並即時生效。</p>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第十三條</span>
+                <span>聯絡窗口</span>
+              </h3>
+              <p>如有相關問題，請聯絡：</p>
+              <ul>
+                <li>公司名稱：＿＿＿＿＿＿＿＿</li>
+                <li>資訊安全負責人：＿＿＿＿＿＿＿＿</li>
+                <li>聯絡信箱：＿＿＿＿＿＿＿＿</li>
+                <li>聯絡電話：＿＿＿＿＿＿＿＿</li>
+              </ul>
+            </article>
+
+            <article class="policy-dialog__article">
+              <h3 class="policy-dialog__article-heading">
+                <span class="policy-dialog__article-number">第十四條</span>
+                <span>附則</span>
+              </h3>
+              <p>本條款未盡事宜，依公司內部規範及相關法令辦理。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@tsparticles/slim@3.9.1/tsparticles.slim.bundle.min.js"></script>

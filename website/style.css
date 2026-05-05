@@ -461,7 +461,7 @@ button {
   width: min(760px, calc(100vw - 32px));
   min-height: min(58vh, 520px);
   max-height: min(82vh, 760px);
-  overflow: auto;
+  overflow: hidden;
   border: 1px solid rgba(205, 210, 196, 0.92);
   border-radius: 18px;
   background: var(--color-surface);
@@ -471,35 +471,6 @@ button {
   transition:
     opacity 0.24s ease-out,
     transform 0.24s ease-out;
-}
-
-.policy-dialog__panel::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.policy-dialog__panel::-webkit-scrollbar-button {
-  width: 0;
-  height: 0;
-  display: none;
-}
-
-.policy-dialog__panel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.policy-dialog__panel::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 999px;
-}
-
-.policy-dialog__panel::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.policy-dialog__panel {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 }
 
 .policy-dialog.is-open .policy-dialog__panel {
@@ -561,7 +532,34 @@ button {
 .policy-dialog__body {
   flex: 1;
   min-height: 220px;
+  overflow: auto;
   padding: var(--space-5);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+
+.policy-dialog__body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.policy-dialog__body::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.policy-dialog__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.policy-dialog__body::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
+}
+
+.policy-dialog__body::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .policy-dialog__content {
@@ -588,7 +586,7 @@ button {
 }
 
 .policy-dialog__article-number {
-  min-width: 4.8em;
+  min-width: 4.2em;
   color: var(--color-primary);
   font-weight: 700;
 }
